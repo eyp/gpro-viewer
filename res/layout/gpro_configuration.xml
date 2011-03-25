@@ -16,7 +16,7 @@
         android:layout_width="fill_parent" android:layout_height="wrap_content"
         android:text="@string/group_number_label" />
     <EditText android:id="@+id/group_number_input_text"
-        android:layout_width="fill_parent" android:layout_height="wrap_content" />
+        android:layout_width="fill_parent" android:layout_height="wrap_content" android:inputType="number"/>
 <!--     <Spinner android:id="@+id/update_intervals_spinner" android:layout_height="wrap_content" 
             android:layout_width="fill_parent" android:prompt="@string/update_intervals_prompt"></Spinner>-->
     <Button android:id="@+id/save_button" android:layout_width="wrap_content"
