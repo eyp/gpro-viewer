@@ -11,7 +11,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:textStyle="bold"
         android:textSize="15sp"
-        android:textColor="#4F97D1"/>
+        android:textColor="#FFFFFF"/>
     <Button android:id="@+id/race_button" 
         android:layout_height="fill_parent"
         android:layout_width="wrap_content" 
