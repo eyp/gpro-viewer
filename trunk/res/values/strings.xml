@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Configuración -->
-    <string name="test">off</string>
+    <string name="test">on</string>
     <string name="test_grid_page">http://192.168.6.20:80/gpro/source_StartingGrid_GroupRookie217.html</string>
     <string name="actual_grid_page">http://www.gpro.net/es/StartingGrid.asp?Group=</string>
     <string name="actual_race_light_page">http://www.gpro.net/en/RaceReplay_light.asp?Group=</string>
@@ -12,14 +12,16 @@
     <string name="view_grid">Grid</string>
     <string name="race">Race</string>
     <string name="not_qualified">Not qualified yet</string>
-    <string name="manager_name_label">Manager name:</string>
-    <string name="group_number_label">Group number:</string>
-    <string name="group_type_label">Group type:</string>
+    <string name="manager_name_label">Manager name</string>
+    <string name="group_number_label">Group number</string>
+    <string name="group_type_label">Group type</string>
     <string name="group_type_prompt">Choose one...</string>
     <string name="update_intervals_label">Update intervals:</string>
     <string name="update_intervals_prompt">Choose one...</string>
     <string name="save">Save</string>
     <string name="ok">Ok</string>
+    <string name="loading">Loading. Please wait...</string>
+    
     <!-- Tipos de grupos -->
     <string name="rookie">Rookie</string>
     <string name="amateur">Amateur</string>
@@ -28,11 +30,11 @@
     <string name="elite">Elite</string>
     
     <string-array name="group_types">
-        <item>Elite</item>
-        <item>Master</item>
-        <item>Pro</item>
-        <item>Amateur</item>
         <item>Rookie</item>
+        <item>Amateur</item>
+        <item>Pro</item>
+        <item>Master</item>
+        <item>Elite</item>
     </string-array>
         
     <string-array name="update_intervals">

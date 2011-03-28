@@ -17,6 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
@@ -128,6 +129,14 @@ public class GproUtils {
             e.printStackTrace();
         }
         return gridPage;
+    }
+    
+    static ProgressDialog makeProgressDialog(Context context, CharSequence message) { 
+        ProgressDialog progress = new ProgressDialog(context); 
+        progress.setIndeterminate(true); 
+        progress.setMessage(message); 
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        return progress;
     }
     
     static String getData(String url) {

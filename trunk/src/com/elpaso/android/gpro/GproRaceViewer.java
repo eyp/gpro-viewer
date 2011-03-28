@@ -2,6 +2,8 @@ package com.elpaso.android.gpro;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ScrollView;
@@ -28,19 +30,40 @@ public class GproRaceViewer extends Activity {
             Log.w(TAG, "El identificador del widget no es válido");
             finish();
         } else {
-            showRace(appWidgetId);
+            new DownloadRaceInfoTask(this).execute(appWidgetId);
         }
         
 	}
 
-    private void showRace(int appWidgetId) {
-        String race = GproUtils.getLightRaceInfo(getBaseContext(), appWidgetId);
-        ScrollView scroll = new ScrollView(this);
-        TableLayout tl = new TableLayout(this);
-        TextView tv = new TextView(this);
-        tv.setText(race);
-        tl.addView(tv);
-        scroll.addView(tl);
-        setContentView(scroll);
+    /**
+     * Clase para que la conexión a la web, y la carga de los datos sea asíncrona y thread-safe.
+     */
+    private class DownloadRaceInfoTask extends AsyncTask<Integer, Void, String> {
+        private Context context;
+        
+        public DownloadRaceInfoTask(Context context) {
+            super();
+            this.context = context;
+        }
+
+        /**
+         * Leemos de la web la información de la carrera.
+         */
+        protected String doInBackground(Integer... appWidgets) {
+            return GproUtils.getLightRaceInfo(context, appWidgets[0]);
+        }
+
+        /**
+         * Actualizamos la vista con la información de la carrera.
+         */
+        protected void onPostExecute(String race) {
+            ScrollView scroll = new ScrollView(this.context);
+            TableLayout tl = new TableLayout(this.context);
+            TextView tv = new TextView(this.context);
+            tv.setText(race);
+            tl.addView(tv);
+            scroll.addView(tl);
+            setContentView(scroll);
+        }
     }
 }
