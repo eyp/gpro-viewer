@@ -3,6 +3,7 @@ package com.elpaso.android.gpro;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,10 +37,10 @@ public class GproWidgetConfigure extends Activity {
     private static final int DIALOG_ALERT_GROUP_NUMBER_ERROR_ID = 3;
     private static final int DIALOG_ALERT_GROUP_TYPE_ERROR_ID = 4;
 
-    int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    EditText managerNameInput;
-    EditText groupNumberInput;
-    Spinner groupTypes;
+    private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
+    private EditText managerNameInput;
+    private EditText groupNumberInput;
+    private Spinner groupTypes;
     //Spinner updateIntervals;
     
     public GproWidgetConfigure() {
@@ -61,7 +62,6 @@ public class GproWidgetConfigure extends Activity {
 
         // Número de grupo
         this.groupNumberInput = (EditText) findViewById(R.id.group_number_input_text);
-//        this.groupNumberInput.setOnKeyListener(this.numberKeyListener);
         
         // Desplegable con tipos de grupo
         groupTypes = (Spinner) findViewById(R.id.group_types_spinner);
@@ -89,21 +89,7 @@ public class GproWidgetConfigure extends Activity {
         }
     }
 
-    /**
-     * Listener para el campo de texto que recoge el número de grupo.
-     */
-    /*
-    View.OnKeyListener numberKeyListener = new OnKeyListener() {
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            // Si se pulsa algún número
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    isANumber(keyCode)) {
-                return false;
-            }
-            return true;
-        }
-    };*/
-
+    
     /**
      * Listener para el botón salvar configuración.
      */
@@ -125,7 +111,6 @@ public class GproWidgetConfigure extends Activity {
             }
             
             String groupType = groupTypes.getSelectedItem().toString();
-            Log.d(TAG, "GroupType: " + groupType);
             String groupNumber = "";
             if (!groupType.equals(context.getString(R.string.elite))) {
                 groupNumber = groupNumberInput.getText().toString();
@@ -210,34 +195,6 @@ public class GproWidgetConfigure extends Activity {
        return dialog;
     }
     
-    /**
-     * Comprueba si la tecla pulsada es un número.
-     * @param keyCode El código de la tecla pulsada.
-     * 
-     * @return true si es un número, false en otro caso.
-     */
-    private boolean isANumber(int keyCode) {
-        boolean isNumber = false;
-        switch (keyCode) {
-        case KeyEvent.KEYCODE_0:
-        case KeyEvent.KEYCODE_1:
-        case KeyEvent.KEYCODE_2:
-        case KeyEvent.KEYCODE_3:
-        case KeyEvent.KEYCODE_4:
-        case KeyEvent.KEYCODE_5:
-        case KeyEvent.KEYCODE_6:
-        case KeyEvent.KEYCODE_7:
-        case KeyEvent.KEYCODE_8:
-        case KeyEvent.KEYCODE_9:
-            isNumber = true;
-            break;
-        default:
-            isNumber = false;
-            break;
-        }
-        return isNumber;
-    }
-
     /**
      * Guardamos el nombre del manager en las preferencias.
      */

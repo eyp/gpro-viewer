@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.View;
 import android.widget.RemoteViews;
 
 /**
@@ -18,6 +17,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
     // Log tag
     private static final String TAG = "GproWidgetProvider";
 
+    
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] widgetIds) {
         Log.d(TAG, "onUpdate");
         final int N = widgetIds.length;
@@ -26,9 +26,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
         for (int i = 0; i < N; i++) {
             int widgetId = widgetIds[i];
             Log.d(TAG, "Actualizando el widget [" + widgetId + "]");
-            updateWidget(context, appWidgetManager, widgetId, 
-                    GproWidgetConfigure.loadManagerName(context, widgetId));
-            
+            updateWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerName(context, widgetId));
         }
     }
 
@@ -60,7 +58,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
         Driver driver = GproUtils.getDriver(context, widgetId, manager);
         String info = "";
         if (driver != null) {
-            info = String.format("%2d: %s (%s)", driver.getPosition(), driver.getTime(), driver.getOffset());
+            info = driver.shortToString();
         } else {
             info = context.getString(R.string.not_qualified);
         }
@@ -68,8 +66,5 @@ public class GproWidgetProvider extends AppWidgetProvider {
 
         // Actualizar el widget
         appWidgetManager.updateAppWidget(widgetId, views);
-    }
-    
-    public void refresh(View view) {
     }
 }

@@ -2,20 +2,20 @@ package com.elpaso.android.gpro;
 
 import java.util.List;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
 
 /**
- * Activity para mostrar la parrilla de salida completa.
+ * Activity para mostrar la parrilla de salida completa. Es una lista con los pilotos, y sus tiempos de clasificación.
  * 
  * @author eduardo.yanez
  */
-public class GproGridViewer extends Activity {
+public class GproGridViewer extends ListActivity {
     private static final String TAG = "GproGridViewer";
     
 	/** 
@@ -30,22 +30,34 @@ public class GproGridViewer extends Activity {
             Log.w(TAG, "El identificador del widget no es válido");
             finish();
         } else {
-            showGrid(appWidgetId);
+            new DownloadGridInfoTask(this).execute(appWidgetId);
         }
-        
 	}
 
-    private void showGrid(int appWidgetId) {
-        ScrollView scroll = new ScrollView(this);
-        TableLayout tl = new TableLayout(this);
-        List<Driver> drivers = GproUtils.findGridDrivers(getBaseContext(), appWidgetId);
-        for (Driver driver : drivers) {
-            TextView tv = new TextView(this);
-            String row = String.format("%2d: %s, %s (%s)", driver.getPosition(), driver.getName(), driver.getTime(), driver.getOffset()); 
-            tv.setText(row);
-            tl.addView(tv);
+	/**
+	 * Clase para que la conexión a la web, y la carga de los datos sea asíncrona y thread-safe.
+	 */
+    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<Driver>> {
+        private Context context;
+        
+        public DownloadGridInfoTask(Context context) {
+            super();
+            this.context = context;
         }
-        scroll.addView(tl);
-        setContentView(scroll);
+
+        /**
+         * Leemos de la web los pilotos que están en la parrilla de clasificación
+         */
+        protected List<Driver> doInBackground(Integer... appWidgets) {
+            return GproUtils.findGridDrivers(context, appWidgets[0]);
+        }
+
+        /**
+         * Actualizamos la lista de pilotos.
+         */
+        protected void onPostExecute(List<Driver> drivers) {
+            ArrayAdapter<Driver> ad = new ArrayAdapter<Driver>(context, R.layout.grid_line, drivers);
+            setListAdapter(ad);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.elpaso.android.gpro;
 
 /**
+ * Información de cada piloto.
  * 
  * @author eduardo.yanez
  */
@@ -35,6 +36,15 @@ public class Driver {
 		this.offset = offset;
 	}
 	
+    public String shortToString() {
+        return String.format("%d - %s (%s)", position, time, offset);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%d - %s, %s (%s)", position, name, time, offset);
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
