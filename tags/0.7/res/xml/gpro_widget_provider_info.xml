@@ -1,7 +1,0 @@
-<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="294dp"
-    android:minHeight="72dp"
-    android:updatePeriodMillis="1800000"
-    android:initialLayout="@layout/gpro_widget"
-    android:configure="com.elpaso.android.gpro.GproWidgetConfigure">
-</appwidget-provider>
