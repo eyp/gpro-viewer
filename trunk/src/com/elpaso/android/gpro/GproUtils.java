@@ -67,6 +67,7 @@ public class GproUtils {
         List<Driver> drivers = parser.parseGridPage(getQualificationPage(group, context));
         return drivers;
     }
+    
     /**
      * Obtiene la información de la clasificación de un piloto, consultando primero la parrilla de clasificación.
      * 
@@ -99,6 +100,13 @@ public class GproUtils {
         return null;
     }
 
+    /**
+     * Lee el contenido de la página ligera de la carrera.
+     * 
+     * @param group String con el tipo de grupo y el número: <em>Rookie - 217</em>
+     * @param context Contexto de la aplicación
+     * @return El contenido de la página.
+     */
     static String getLightRacePageContent(String group, Context context) {
         String racePage = "";
         try {
@@ -135,6 +143,7 @@ public class GproUtils {
         ProgressDialog progress = new ProgressDialog(context); 
         progress.setIndeterminate(true); 
         progress.setMessage(message); 
+        progress.setCancelable(false);
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         return progress;
     }
@@ -166,4 +175,28 @@ public class GproUtils {
         }
         return pageContent;
     }
+    
+
+    /*
+    private void updateWidget() {
+        dialog = GproUtils.makeProgressDialog(context, "Hooooooooooola");
+        dialog.show();
+        handler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                case 1:
+                    dialog.dismiss();
+                    break;
+                default:
+                    break;
+                }
+            }
+        };
+        thread = new Thread() {
+            public void run() {
+                handler.sendEmptyMessage(1);
+            };
+        };
+        thread.start();
+    }*/
 }
