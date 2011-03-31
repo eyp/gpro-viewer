@@ -3,6 +3,7 @@ package com.elpaso.android.gpro;
 import java.util.List;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -39,6 +40,8 @@ public class GproGridViewer extends ListActivity {
 	 */
     private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<Driver>> {
         private Context context;
+        private Integer widgetId;
+        private ProgressDialog progressDialog;
         
         public DownloadGridInfoTask(Context context) {
             super();
@@ -46,10 +49,20 @@ public class GproGridViewer extends ListActivity {
         }
 
         /**
+         * Mostramos un diálogo de 'Cargando...' o con el mensaje que sea.
+         */
+        @Override
+        protected void onPreExecute() {
+            progressDialog = GproUtils.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog.show();
+        }
+
+        /**
          * Leemos de la web los pilotos que están en la parrilla de clasificación
          */
         protected List<Driver> doInBackground(Integer... appWidgets) {
-            return GproUtils.findGridDrivers(context, appWidgets[0]);
+            this.widgetId = appWidgets[0];
+            return GproUtils.findGridDrivers(context, widgetId);
         }
 
         /**
@@ -58,6 +71,11 @@ public class GproGridViewer extends ListActivity {
         protected void onPostExecute(List<Driver> drivers) {
             ArrayAdapter<Driver> ad = new ArrayAdapter<Driver>(context, R.layout.grid_line, drivers);
             setListAdapter(ad);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            String manager = GproWidgetConfigure.loadManagerName(context, widgetId);
+            Driver driver = GproUtils.getDriver(drivers, manager);
+            GproWidgetProvider.updateWidget(context, appWidgetManager, widgetId, driver);
+            progressDialog.dismiss();
         }
     }
 }

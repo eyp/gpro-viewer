@@ -3,7 +3,6 @@ package com.elpaso.android.gpro;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,9 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -131,7 +128,7 @@ public class GproWidgetConfigure extends Activity {
 
             // Actualizamos la información que se muestra en el widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            GproWidgetProvider.updateWidget(context, appWidgetManager, mAppWidgetId, loadManagerName(context, mAppWidgetId));
+            GproWidgetProvider.setUpWidget(context, appWidgetManager, mAppWidgetId, loadManagerName(context, mAppWidgetId));
 
             // Devolvemos el control al widget que nos llamó
             Intent resultValue = new Intent();
@@ -140,7 +137,7 @@ public class GproWidgetConfigure extends Activity {
             finish();
         }
     };
-
+        
 //    private long calcUpdateIntervalMillis() {
 //        int pos = updateIntervals.getSelectedItemPosition();
 //        long interval = 30 * 60 * 1000;
@@ -300,5 +297,4 @@ public class GproWidgetConfigure extends Activity {
             return context.getString(R.string.default_group_number);
         }
     }
-    
 }

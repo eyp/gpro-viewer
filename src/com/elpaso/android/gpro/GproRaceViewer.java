@@ -1,6 +1,7 @@
 package com.elpaso.android.gpro;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -40,6 +41,7 @@ public class GproRaceViewer extends Activity {
      */
     private class DownloadRaceInfoTask extends AsyncTask<Integer, Void, String> {
         private Context context;
+        private ProgressDialog progressDialog;
         
         public DownloadRaceInfoTask(Context context) {
             super();
@@ -47,8 +49,18 @@ public class GproRaceViewer extends Activity {
         }
 
         /**
+         * Mostramos un diálogo de 'Cargando...' o con el mensaje que sea.
+         */
+        @Override
+        protected void onPreExecute() {
+            progressDialog = GproUtils.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog.show();
+        }
+
+        /**
          * Leemos de la web la información de la carrera.
          */
+        @Override
         protected String doInBackground(Integer... appWidgets) {
             return GproUtils.getLightRaceInfo(context, appWidgets[0]);
         }
@@ -56,6 +68,7 @@ public class GproRaceViewer extends Activity {
         /**
          * Actualizamos la vista con la información de la carrera.
          */
+        @Override
         protected void onPostExecute(String race) {
             ScrollView scroll = new ScrollView(this.context);
             TableLayout tl = new TableLayout(this.context);
@@ -63,6 +76,7 @@ public class GproRaceViewer extends Activity {
             tv.setText(race);
             tl.addView(tv);
             scroll.addView(tl);
+            progressDialog.dismiss();
             setContentView(scroll);
         }
     }
