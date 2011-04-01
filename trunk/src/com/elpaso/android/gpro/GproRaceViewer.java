@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ public class GproRaceViewer extends Activity {
     private class DownloadRaceInfoTask extends AsyncTask<Integer, Void, String> {
         private Context context;
         private ProgressDialog progressDialog;
+        private Integer widgetId;
         
         public DownloadRaceInfoTask(Context context) {
             super();
@@ -62,6 +65,7 @@ public class GproRaceViewer extends Activity {
          */
         @Override
         protected String doInBackground(Integer... appWidgets) {
+            this.widgetId = appWidgets[0];
             return GproUtils.getLightRaceInfo(context, appWidgets[0]);
         }
 
@@ -72,8 +76,17 @@ public class GproRaceViewer extends Activity {
         protected void onPostExecute(String race) {
             ScrollView scroll = new ScrollView(this.context);
             TableLayout tl = new TableLayout(this.context);
+            Button refresh = new Button(context);
+            refresh.setText(R.string.refresh);
+            refresh.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View paramView) {
+                    new DownloadRaceInfoTask(context).execute(widgetId);
+                }
+            });
             TextView tv = new TextView(this.context);
             tv.setText(race);
+            tv.setTextAppearance(context, R.style.boldText);
+            tl.addView(refresh);
             tl.addView(tv);
             scroll.addView(tl);
             progressDialog.dismiss();

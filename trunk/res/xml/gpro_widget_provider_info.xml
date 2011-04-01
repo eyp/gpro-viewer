@@ -3,5 +3,5 @@
     android:minHeight="72dp"
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/gpro_widget"
-    android:configure="com.elpaso.android.gpro.GproWidgetConfigure">
+     android:configure="com.elpaso.android.gpro.GproWidgetConfigure">
 </appwidget-provider>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="actual_race_light_page">http://www.gpro.net/es/race_light.asp?Group=</string>
+
     <!-- Etiquetas -->
     <string name="view_grid">Parrilla</string>
     <string name="race">Carrera</string>
@@ -11,6 +13,7 @@
     <string name="update_intervals_label">Update intervals:</string>
     <string name="update_intervals_prompt">Elige uno...</string>
     <string name="save">Guardar</string>
+    <string name="refresh">Refrescar</string>
     <string name="ok">Aceptar</string>
     <string name="loading">Cargando. Espere, por favor...</string>
 

@@ -4,7 +4,7 @@
     <string name="test">off</string>
     <string name="test_grid_page">http://192.168.6.20:80/gpro/source_StartingGrid_GroupRookie217.html</string>
     <string name="actual_grid_page">http://www.gpro.net/es/StartingGrid.asp?Group=</string>
-    <string name="actual_race_light_page">http://www.gpro.net/en/RaceReplay_light.asp?Group=</string>
+    <string name="actual_race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
     <string name="test_race_light_page">http://192.168.6.20:80/gpro/source_race_light_grouprookie217.html</string>
     
     <!-- Etiquetas -->
@@ -19,6 +19,7 @@
     <string name="update_intervals_label">Update intervals:</string>
     <string name="update_intervals_prompt">Choose one...</string>
     <string name="save">Save</string>
+    <string name="refresh">Refresh</string>
     <string name="ok">Ok</string>
     <string name="loading">Loading. Please wait...</string>
     
