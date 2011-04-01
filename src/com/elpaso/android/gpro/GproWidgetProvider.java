@@ -48,12 +48,12 @@ public class GproWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.grid_button, pendingIntent);
         
         // Crear un intent para lanzar una activity 
-//        Intent intentRace = new Intent(context, GproRaceViewer.class);
-//        intentRace.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-//        PendingIntent pendingIntentRace = PendingIntent.getActivity(context, 0, intentRace, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intentRace = new Intent(context, GproRaceViewer.class);
+        intentRace.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        PendingIntent pendingIntentRace = PendingIntent.getActivity(context, 0, intentRace, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Asociamos la llamada al intent anterior en el onclick del botón
-//        views.setOnClickPendingIntent(R.id.race_button, pendingIntentRace);
+        views.setOnClickPendingIntent(R.id.race_button, pendingIntentRace);
         
         // Actualizamos el texto del widget
         Driver driver = GproUtils.getDriver(context, widgetId, manager);
