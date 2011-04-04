@@ -103,8 +103,7 @@ public class GproGridViewer extends ListActivity {
             setListAdapter(ad);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             
-            Driver driver = GproUtils.getDriver(drivers, manager);
-            GproWidgetProvider.updateWidget(context, appWidgetManager, widgetId, driver);
+            GproWidgetProvider.setUpWidget(context, appWidgetManager, widgetId, manager);
             progressDialog.dismiss();
         }
     }

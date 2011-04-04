@@ -25,8 +25,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
         // Por cada widget asociado al provider
         for (int i = 0; i < N; i++) {
             int widgetId = widgetIds[i];
-            updateWidget(context, appWidgetManager, widgetId, 
-                    GproUtils.getDriver(context, widgetId, GproWidgetConfigure.loadManagerName(context, widgetId)));
+            setUpWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerName(context, widgetId));
         }
     }
 
@@ -72,6 +71,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
     /**
      * Actualiza la información de la pantalla del widget con los datos del piloto recibido. No actualiza ni los botones 
      * ni nada más.
+     * @deprecated De momento no se debe usar.
      */
     static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Driver driver) {
         Log.d(TAG, "Updating driver info for GproWidget [" + widgetId + "]");
