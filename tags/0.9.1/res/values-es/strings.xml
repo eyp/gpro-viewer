@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="actual_race_light_page">http://www.gpro.net/es/race_light.asp?Group=</string>
+
+    <!-- Etiquetas -->
+    <string name="view_grid">Parrilla</string>
+    <string name="race">Carrera</string>
+    <string name="not_qualified">Sin clasificar</string>
+    <string name="manager_name_label">Nombre del mánager</string>
+    <string name="group_number_label">Número de grupo</string>
+    <string name="group_type_label">Tipo de grupo</string>
+    <string name="group_type_prompt">Elige uno...</string>
+    <string name="update_intervals_label">Update intervals:</string>
+    <string name="update_intervals_prompt">Elige uno...</string>
+    <string name="save">Guardar</string>
+    <string name="refresh">Refrescar</string>
+    <string name="ok">Aceptar</string>
+    <string name="loading">Cargando. Espere, por favor...</string>
+
+    <!-- Mensajes -->
+    <string name="manager_name_mandatory">Escribe un Nombre de Manáger</string>
+    <string name="group_number_mandatory">Escribe un Número de Grupo</string>
+    <string name="group_number_is_not_number">El Número de Grupo debe ser numérico</string>
+    <string name="group_type_mandatory">Elige un Tipo de Grupo</string>
+</resources>
