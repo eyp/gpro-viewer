@@ -5,23 +5,23 @@ package com.elpaso.android.gpro;
  * 
  * @author eduardo.yanez
  */
-public class Driver {
-	private String name;
-	private int position;
+public class GridPosition {
+	private String managerName;
+	private int place;
 	private String time;
 	private String offset;
 
-	public String getName() {
-		return name;
+	public String getManagerName() {
+		return managerName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setManagerName(String managerName) {
+		this.managerName = managerName;
 	}
-	public int getPosition() {
-		return position;
+	public int getPlace() {
+		return place;
 	}
-	public void setPosition(int position) {
-		this.position = position;
+	public void setPlace(int place) {
+		this.place = place;
 	}
 	public String getTime() {
 		return time;
@@ -37,19 +37,19 @@ public class Driver {
 	}
 	
     public String shortToString() {
-        return String.format("%d - %s (%s)", position, time, offset);
+        return String.format("%d - %s (%s)", place, time, offset);
     }
     
     @Override
     public String toString() {
-        return String.format("%d - %s, %s (%s)", position, name, time, offset);
+        return String.format("%d - %s, %s (%s)", place, managerName, time, offset);
     }
     
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((managerName == null) ? 0 : managerName.hashCode());
         return result;
     }
     
@@ -61,11 +61,11 @@ public class Driver {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Driver other = (Driver) obj;
-        if (name == null) {
-            if (other.name != null)
+        GridPosition other = (GridPosition) obj;
+        if (managerName == null) {
+            if (other.managerName != null)
                 return false;
-        } else if (!name.equals(other.name))
+        } else if (!managerName.equals(other.managerName))
             return false;
         return true;
     }

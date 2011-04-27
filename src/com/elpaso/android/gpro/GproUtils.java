@@ -60,11 +60,11 @@ public class GproUtils {
      * Recupera la lista de pilotos que están clasificados en la parrilla de salida, o una lista
      * vacía si no hay ninguno. 
      */
-    static List<Driver> findGridDrivers(Context context, int widgetId) {
+    static List<GridPosition> findGridPositions(Context context, int widgetId) {
         GproParser parser = new GproParser();
         String group = GproWidgetConfigure.loadGroupId(context, widgetId);
         Log.d(GproUtils.class.getName(), "ID Grupo: " + group);
-        List<Driver> drivers = parser.parseGridPage(getQualificationPage(group, context));
+        List<GridPosition> drivers = parser.parseGridPage(getQualificationPage(group, context));
         return drivers;
     }
     
@@ -74,10 +74,10 @@ public class GproUtils {
      * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
      * @return La información de clasificación del piloto, o null si no se ha clasificado.
      */
-    static Driver getDriver(Context context, int widgetId, String managerName) {
-        List<Driver> drivers = findGridDrivers(context, widgetId); 
-        for (Driver driver : drivers) {
-            if (driver.getName().equals(managerName)) {
+    static GridPosition findGridManagerPosition(Context context, int widgetId, String managerName) {
+        List<GridPosition> drivers = findGridPositions(context, widgetId); 
+        for (GridPosition driver : drivers) {
+            if (driver.getManagerName().equals(managerName)) {
                 return driver;
             }
         }
@@ -91,9 +91,9 @@ public class GproUtils {
      * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
      * @return La información de clasificación del piloto, o null si no se ha clasificado.
      */
-    static Driver getDriver(List<Driver> drivers, String managerName) {
-        for (Driver driver : drivers) {
-            if (driver.getName().equals(managerName)) {
+    static GridPosition findGridManagerPosition(List<GridPosition> drivers, String managerName) {
+        for (GridPosition driver : drivers) {
+            if (driver.getManagerName().equals(managerName)) {
                 return driver;
             }
         }

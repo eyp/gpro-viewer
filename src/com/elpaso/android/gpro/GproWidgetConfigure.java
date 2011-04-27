@@ -123,6 +123,7 @@ public class GproWidgetConfigure extends Activity {
                     return;
                 } 
             }
+            saveGroupType(context, mAppWidgetId, groupType);
             saveGroupNumber(context, mAppWidgetId, groupNumber);
 //            saveUpdateInterval(context, mAppWidgetId, calcUpdateIntervalMillis());
 
@@ -276,7 +277,7 @@ public class GproWidgetConfigure extends Activity {
      */
     private static String loadGroupType(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String groupType = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY, null);
+        String groupType = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY + appWidgetId, null);
         if (groupType != null) {
             return groupType;
         } else {

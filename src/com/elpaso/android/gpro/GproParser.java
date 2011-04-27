@@ -22,15 +22,15 @@ class GproParser {
      * @param gridPage Página con la parrilla de clasificación que se quiere parsear.
      * @return La lista de pilotos, o una lista vacía si no hay ninguno clasificado.
      */
-    List<Driver> parseGridPage(String gridPage) {
+    List<GridPosition> parseGridPage(String gridPage) {
         this.currentIdx = 0;
-        List<Driver> grid = new ArrayList<Driver>();
-        Driver driver = this.nextDriver(gridPage);
-        int position = 0;
-        while (driver != null) {
-            driver.setPosition(++position);
-            grid.add(driver);
-            driver = this.nextDriver(gridPage);
+        List<GridPosition> grid = new ArrayList<GridPosition>();
+        GridPosition position = this.nextPosition(gridPage);
+        int place = 0;
+        while (position != null) {
+            position.setPlace(++place);
+            grid.add(position);
+            position = this.nextPosition(gridPage);
         }
         return grid;
     }
@@ -62,8 +62,8 @@ class GproParser {
      * @param gridPage Página de la parrilla de clasificación.
      * @return
      */
-    private Driver nextDriver(String gridPage) {
-        Driver driver = null;
+    private GridPosition nextPosition(String gridPage) {
+        GridPosition driver = null;
         if (this.currentIdx >= 0) {
             int idxStart = gridPage.indexOf("ManagerProfile", this.currentIdx);
             int idxEnd = -1;
@@ -78,8 +78,8 @@ class GproParser {
                 idxStart = gridPage.indexOf("(", idxEnd) + 1;
                 idxEnd = gridPage.indexOf(")", idxStart);
                 String offset = gridPage.substring(idxStart, idxEnd).trim();
-                driver = new Driver();
-                driver.setName(name);
+                driver = new GridPosition();
+                driver.setManagerName(name);
                 driver.setTime(time);
                 driver.setOffset(offset);
             }
