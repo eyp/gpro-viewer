@@ -43,7 +43,7 @@ public class GproGridViewer extends ListActivity {
 	/**
 	 * Clase para que la conexión a la web, y la carga de los datos sea asíncrona y thread-safe.
 	 */
-    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<Driver>> {
+    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<GridPosition>> {
         private Context context;
         private Integer widgetId;
         private ProgressDialog progressDialog;
@@ -65,17 +65,17 @@ public class GproGridViewer extends ListActivity {
         /**
          * Leemos de la web los pilotos que están en la parrilla de clasificación
          */
-        protected List<Driver> doInBackground(Integer... appWidgets) {
+        protected List<GridPosition> doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
-            return GproUtils.findGridDrivers(context, widgetId);
+            return GproUtils.findGridPositions(context, widgetId);
         }
 
         /**
          * Actualizamos la lista de pilotos.
          */
-        protected void onPostExecute(List<Driver> drivers) {
+        protected void onPostExecute(List<GridPosition> drivers) {
             final String manager = GproWidgetConfigure.loadManagerName(context, widgetId);
-            ArrayAdapter<Driver> ad = new ArrayAdapter<Driver>(context, R.layout.grid_line, drivers) {
+            ArrayAdapter<GridPosition> ad = new ArrayAdapter<GridPosition>(context, R.layout.grid_line, drivers) {
                 @Override
                 public View getView(int position, View convertView, ViewGroup parent) {
                     View v = convertView;
@@ -83,15 +83,15 @@ public class GproGridViewer extends ListActivity {
                         LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                         v = vi.inflate(R.layout.grid_line, null);
                     }
-                    Driver driver = getItem(position);
+                    GridPosition driver = getItem(position);
                     if (driver != null) {
                         TextView positionText = (TextView) v.findViewById(R.id.line_position);
                         TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
                         TextView timeText = (TextView) v.findViewById(R.id.line_time);
-                        positionText.setText(String.valueOf(driver.getPosition()));
+                        positionText.setText(String.valueOf(driver.getPlace()));
                         timeText.setText(driver.getTime() + " (" + driver.getOffset() + ")");
-                        nameText.setText(driver.getName());
-                        if (driver.getName().equals(manager)) {
+                        nameText.setText(driver.getManagerName());
+                        if (driver.getManagerName().equals(manager)) {
                             nameText.setTextAppearance(context, R.style.highlightedText);
                             positionText.setTextAppearance(context, R.style.highlightedText);
                             timeText.setTextAppearance(context, R.style.highlightedText);

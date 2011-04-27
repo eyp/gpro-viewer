@@ -55,7 +55,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.race_button, pendingIntentRace);
         
         // Actualizamos el texto del widget
-        Driver driver = GproUtils.getDriver(context, widgetId, manager);
+        GridPosition driver = GproUtils.findGridManagerPosition(context, widgetId, manager);
         String info = "";
         if (driver != null) {
             info = driver.shortToString();
@@ -73,14 +73,14 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * ni nada más.
      * @deprecated De momento no se debe usar.
      */
-    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Driver driver) {
+    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, GridPosition gridPosition) {
         Log.d(TAG, "Updating driver info for GproWidget [" + widgetId + "]");
         // Obtenemos las vistas del widget
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
 
         String info = "";
-        if (driver != null) {
-            info = driver.shortToString();
+        if (gridPosition != null) {
+            info = gridPosition.shortToString();
         } else {
             info = context.getString(R.string.not_qualified);
         }
