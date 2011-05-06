@@ -2,11 +2,22 @@
 <resources>
     <!-- Configuración -->
     <string name="test">off</string>
-    <string name="test_grid_page">http://192.168.6.20:80/gpro/source_StartingGrid_GroupRookie217.html</string>
-    <string name="actual_grid_page">http://www.gpro.net/es/StartingGrid.asp?Group=</string>
-    <string name="actual_race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
-    <string name="test_race_light_page">http://192.168.6.20:80/gpro/source_race_light_grouprookie217.html</string>
+    <string name="services">on</string>
+    
+    <!-- Producción -->
+    <string name="test_grid_page">http://192.168.6.20:80/gpro/StartingGrid.html?Group=</string>
+    <string name="grid_page">http://www.gpro.net/es/StartingGrid.asp?Group=</string>
+    <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
+    <string name="test_race_light_page">http://192.168.6.20:80/gpro/race_light.html?Group=</string>
+    
+    <!-- Desarrollo -->
     <string name="test_qualification_page">http://192.168.6.20:80/gpro/source_qualification_times_group_rookie-217.html</string>
+
+    <!-- Servicios XML -->    
+    <string name="service_grid_page">http://www.gpro.net/gb/devzone/StartingGridXML.asp?Group=</string>
+    <string name="service_group_members_page">http://www.gpro.net/gb/devzone/ManagersInGroupXML.asp?Group=</string>
+    <string name="test_service_grid_page">http://192.168.6.20:80/gpro/StartingGridXML.html?Group=</string>
+    <string name="test_service_group_members_page">http://192.168.6.20:80/gpro/ManagersInGroupXML.html?Group=</string>
     
     <!-- Etiquetas -->
     <string name="app_name">Gpro Viewer</string>
@@ -16,12 +27,13 @@
     <string name="manager_name_label">Manager name</string>
     <string name="group_number_label">Group number</string>
     <string name="group_type_label">Group type</string>
-    <string name="group_type_prompt">Choose one...</string>
+    <string name="spinner_prompt">Choose one...</string>
     <string name="update_intervals_label">Update intervals:</string>
     <string name="update_intervals_prompt">Choose one...</string>
     <string name="save">Save</string>
     <string name="refresh">Refresh</string>
     <string name="ok">Ok</string>
+    <string name="code">Code</string>
     <string name="loading">Loading. Please wait...</string>
     
     <!-- Tipos de grupos -->
@@ -46,9 +58,9 @@
     </string-array>
         
     <!-- Valores por defecto -->
-    <string name="default_manager_name">Eduardo Yáñez Parareda</string>
-    <string name="default_group_type">Rookie</string>
-    <string name="default_group_number">217</string>
+    <string name="default_manager_name"></string>
+    <string name="default_group_type">Elite</string>
+    <string name="default_group_number"></string>
     <string name="default_update_interval">1800000</string>
     
     <!-- Mensajes -->
@@ -56,4 +68,5 @@
     <string name="group_number_mandatory">You must enter a Group Number</string>
     <string name="group_number_is_not_number">Group Number must be a number</string>
     <string name="group_type_mandatory">You must choose a Group Type</string>
+    <string name="error_100">There was an error getting information from GPRO</string>
 </resources>

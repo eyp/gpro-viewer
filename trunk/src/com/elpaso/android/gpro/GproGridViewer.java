@@ -2,10 +2,15 @@ package com.elpaso.android.gpro;
 
 import java.util.List;
 
+import com.elpaso.android.gpro.beans.GridPosition;
+import com.elpaso.android.gpro.exceptions.ParseException;
+
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +26,7 @@ import android.widget.TextView;
  * @author eduardo.yanez
  */
 public class GproGridViewer extends ListActivity {
-    private static final String TAG = "GproGridViewer";
+    private static final String TAG = GproGridViewer.class.getName();
     
 	/** 
 	 * Se llama cuando la activity es creada. 
@@ -30,9 +35,9 @@ public class GproGridViewer extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         // Recuperamos el identificador del widget que ha llamado, y si no es válido, terminamos.
-		int appWidgetId = GproUtils.getWidgetId(this.getIntent());
+		int appWidgetId = UtilHelper.getWidgetId(this.getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            Log.w(TAG, "El identificador del widget no es válido");
+            Log.w(TAG, "Widget identifier is invalid");
             finish();
         } else {
             getListView().setDividerHeight(2);
@@ -58,7 +63,7 @@ public class GproGridViewer extends ListActivity {
          */
         @Override
         protected void onPreExecute() {
-            progressDialog = GproUtils.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog = UIHelper.makeProgressDialog(context, getText(R.string.loading));
             progressDialog.show();
         }
 
@@ -67,43 +72,60 @@ public class GproGridViewer extends ListActivity {
          */
         protected List<GridPosition> doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
-            return GproUtils.findGridPositions(context, widgetId);
+            try {
+                return GproDAO.findGridPositions(context, widgetId);
+            } catch (ParseException e) {
+                return null;
+            }
         }
 
         /**
          * Actualizamos la lista de pilotos.
          */
         protected void onPostExecute(List<GridPosition> drivers) {
-            final String manager = GproWidgetConfigure.loadManagerName(context, widgetId);
-            ArrayAdapter<GridPosition> ad = new ArrayAdapter<GridPosition>(context, R.layout.grid_line, drivers) {
-                @Override
-                public View getView(int position, View convertView, ViewGroup parent) {
-                    View v = convertView;
-                    if (v == null) {
-                        LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        v = vi.inflate(R.layout.grid_line, null);
-                    }
-                    GridPosition driver = getItem(position);
-                    if (driver != null) {
-                        TextView positionText = (TextView) v.findViewById(R.id.line_position);
-                        TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
-                        TextView timeText = (TextView) v.findViewById(R.id.line_time);
-                        positionText.setText(String.valueOf(driver.getPlace()));
-                        timeText.setText(driver.getTime() + " (" + driver.getOffset() + ")");
-                        nameText.setText(driver.getManagerName());
-                        if (driver.getManagerName().equals(manager)) {
-                            nameText.setTextAppearance(context, R.style.highlightedText);
-                            positionText.setTextAppearance(context, R.style.highlightedText);
-                            timeText.setTextAppearance(context, R.style.highlightedText);
+            if (drivers == null) {
+                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                alertDialog.setTitle("Error");
+                alertDialog.setMessage("(" + context.getString(R.string.code) + " 100): " + context.getString(R.string.error_100));
+                alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    return;
+                } }); 
+            } else {
+                final Integer managerId = GproWidgetConfigure.loadManagerIdm(context, widgetId);
+                ArrayAdapter<GridPosition> ad = new ArrayAdapter<GridPosition>(context, R.layout.grid_line, drivers) {
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        View v = convertView;
+                        if (v == null) {
+                            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                            v = vi.inflate(R.layout.grid_line, null);
                         }
+                        GridPosition driver = getItem(position);
+                        if (driver != null) {
+                            TextView positionText = (TextView) v.findViewById(R.id.line_position);
+                            TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
+                            TextView timeText = (TextView) v.findViewById(R.id.line_time);
+                            positionText.setText(String.valueOf(driver.getPosition()));
+                            timeText.setText(driver.getTime() + " (" + driver.getGap() + ")");
+                            nameText.setText(driver.getName());
+                            if (driver.getIdm().equals(managerId)) {
+                                nameText.setTextAppearance(context, R.style.highlightedText);
+                                positionText.setTextAppearance(context, R.style.highlightedText);
+                                timeText.setTextAppearance(context, R.style.highlightedText);
+                            }
+                        }
+                        return v;
                     }
-                    return v;
+                };
+                setListAdapter(ad);
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                try {
+                    GproWidgetProvider.setUpWidget(context, appWidgetManager, widgetId, managerId);
+                } catch (ParseException e) {
+                    Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
                 }
-            };
-            setListAdapter(ad);
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            
-            GproWidgetProvider.setUpWidget(context, appWidgetManager, widgetId, manager);
+            }
             progressDialog.dismiss();
         }
     }
