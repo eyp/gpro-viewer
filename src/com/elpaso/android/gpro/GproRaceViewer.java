@@ -28,7 +28,7 @@ public class GproRaceViewer extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         // Recuperamos el identificador del widget que ha llamado, y si no es válido, terminamos.
-		int appWidgetId = GproUtils.getWidgetId(this.getIntent());
+		int appWidgetId = UtilHelper.getWidgetId(this.getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             Log.w(TAG, "El identificador del widget no es válido");
             finish();
@@ -56,7 +56,7 @@ public class GproRaceViewer extends Activity {
          */
         @Override
         protected void onPreExecute() {
-            progressDialog = GproUtils.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog = UIHelper.makeProgressDialog(context, getText(R.string.loading));
             progressDialog.show();
         }
 
@@ -66,7 +66,7 @@ public class GproRaceViewer extends Activity {
         @Override
         protected String doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
-            return GproUtils.getLightRaceInfo(context, appWidgets[0]);
+            return GproDAO.getLightRaceInfo(context, appWidgets[0]);
         }
 
         /**

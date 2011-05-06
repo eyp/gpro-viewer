@@ -1,18 +1,16 @@
-/**
- * 
- */
-package com.elpaso.android.gpro;
+package com.elpaso.android.gpro.parsers;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.elpaso.android.gpro.beans.GridPosition;
+
 /**
- * Parsea las páginas en busca de información.
+ * Parsea las páginas HTML de GPRO en busca de información.
  * 
  * @author eduardo.yanez
  */
-class GproParser {
+public class HtmlParser {
 
     int currentIdx = 0;
 
@@ -22,13 +20,13 @@ class GproParser {
      * @param gridPage Página con la parrilla de clasificación que se quiere parsear.
      * @return La lista de pilotos, o una lista vacía si no hay ninguno clasificado.
      */
-    List<GridPosition> parseGridPage(String gridPage) {
+    public List<GridPosition> parseGridPage(String gridPage) {
         this.currentIdx = 0;
         List<GridPosition> grid = new ArrayList<GridPosition>();
         GridPosition position = this.nextPosition(gridPage);
         int place = 0;
         while (position != null) {
-            position.setPlace(++place);
+            position.setPosition(++place);
             grid.add(position);
             position = this.nextPosition(gridPage);
         }
@@ -41,7 +39,7 @@ class GproParser {
      * @param racePage Página con la página de la carrera en formato ligero.
      * @return La información de la carrera.
      */
-    String parseLightRacePage(String racePage) {
+    public String parseLightRacePage(String racePage) {
         int idxStart = racePage.lastIndexOf("form");
         int idxEnd = -1;
         String race = "";
@@ -53,7 +51,7 @@ class GproParser {
             race = race.replaceAll("</div>", "");
             race = race.replaceAll("<!--NEXTLAPIN--><!--TIRESFUELINFO-->", "\n");
         }
-        return unescape(race);
+        return ParserHelper.unescape(race);
     }
 
     /**
@@ -70,7 +68,7 @@ class GproParser {
             if (idxStart > 0) {
                 idxStart = gridPage.indexOf(">", idxStart) + 1;
                 idxEnd = gridPage.indexOf("</a", idxStart);
-                String name = unescape(gridPage.substring(idxStart, idxEnd).trim());
+                String name = ParserHelper.unescape(gridPage.substring(idxStart, idxEnd).trim());
                 idxStart = gridPage.indexOf("<font", idxEnd);
                 idxStart = gridPage.indexOf(">", idxStart) + 1;
                 idxEnd = gridPage.indexOf("<", idxStart);
@@ -79,63 +77,12 @@ class GproParser {
                 idxEnd = gridPage.indexOf(")", idxStart);
                 String offset = gridPage.substring(idxStart, idxEnd).trim();
                 driver = new GridPosition();
-                driver.setManagerName(name);
+                driver.setName(name);
                 driver.setTime(time);
-                driver.setOffset(offset);
+                driver.setGap(offset);
             }
             this.currentIdx = idxEnd;
         }
         return driver;
-    }
-
-    /**
-     * Convierte entidades XML que representan letras acentuadas, eñes, etc... a caracteres UTF.
-     * 
-     * @param str La cadena que se quiere decodificar.
-     * @return la cadena decodificada.
-     */
-    private String unescape(String str) {
-        StringBuffer buf = null;
-        String entityName = null;
-        char ch = ' ';
-        char charAt1 = ' ';
-        int entityValue = 0;
-        buf = new StringBuffer(str.length());
-        for (int i = 0, l = str.length(); i < l; ++i) {
-            ch = str.charAt(i);
-            if (ch == '&') {
-                int semi = str.indexOf(';', i + 1);
-
-                if (semi == -1) {
-                    buf.append(ch);
-                    continue;
-                }
-                entityName = str.substring(i + 1, semi);
-
-                if (entityName.charAt(0) == '#') {
-                    charAt1 = entityName.charAt(1);
-                    if (charAt1 == 'x' || charAt1 == 'X') {
-                        entityValue = Integer.valueOf(entityName.substring(2), 16).intValue();
-                    } else {
-                        entityValue = Integer.parseInt(entityName.substring(1));
-                    }
-                }
-                if (entityValue == -1) {
-                    buf.append('&');
-                    buf.append(entityName);
-                    buf.append(';');
-                } else {
-                    buf.append((char) (entityValue));
-                }
-                i = semi;
-            } else {
-                buf.append(ch);
-            }
-        }
-        try {
-            return new String(buf.toString().getBytes(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            return buf.toString();
-        }
     }
 }
