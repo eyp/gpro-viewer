@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
@@ -167,12 +166,18 @@ public class GproWidgetConfigure extends Activity {
     AdapterView.OnItemSelectedListener groupTypeListener = new AdapterView.OnItemSelectedListener() {
         public void onItemSelected(AdapterView<?> arg0, View view, int pos, long id) {
             final Context context = GproWidgetConfigure.this;
-            // Número de grupo
-            ArrayAdapter<CharSequence> groupsAdapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item, 
-                    getGroupNumbers(groupTypes.getSelectedItem().toString()));
-            groupsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            groupNumbers.setAdapter(groupsAdapter);
-            groupNumbers.setEnabled(true);
+            // Si el grupo elegido es Élite, pasamos del número de grupo y cargamos los mánagers directamente 
+            if (groupTypes.getSelectedItem().toString().equals(context.getString(R.string.elite))) {
+                groupNumbers.setEnabled(false);
+                new DownloadGroupManagersTask(context).execute();
+            } else {
+                // Número de grupo
+                ArrayAdapter<CharSequence> groupsAdapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item, 
+                        getGroupNumbers(groupTypes.getSelectedItem().toString()));
+                groupsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                groupNumbers.setAdapter(groupsAdapter);
+                groupNumbers.setEnabled(true);
+            }
         }
 
         public void onNothingSelected(AdapterView<?> arg0) {
@@ -209,7 +214,7 @@ public class GproWidgetConfigure extends Activity {
          */
         @Override
         protected void onPreExecute() {
-            progressDialog = UIHelper.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog = UIHelper.makeProgressDialog(context, getString(R.string.loading));
             progressDialog.show();
         }
 
@@ -230,58 +235,22 @@ public class GproWidgetConfigure extends Activity {
          * Actualizamos la lista de managers.
          */
         protected void onPostExecute(List<Manager> groupManagers) {
-            ArrayAdapter<Manager> managersAdapter;
-            managersAdapter = new ArrayAdapter<Manager>(context, android.R.layout.simple_spinner_item, groupManagers);
-            managersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            managers.setAdapter(managersAdapter);
-            managers.setEnabled(true);
-            progressDialog.dismiss();
+            if (groupManagers != null) {
+                ArrayAdapter<Manager> managersAdapter = new ArrayAdapter<Manager>(context, android.R.layout.simple_spinner_item, groupManagers);
+                managersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                managers.setAdapter(managersAdapter);
+                managers.setEnabled(true);
+                progressDialog.dismiss();
+            } else {
+                progressDialog.dismiss();
+                managers.setEnabled(false);
+                Dialog alert = UIHelper.makeAlertDialog(context, context.getString(R.string.error), 
+                        UIHelper.makeErrorMessage(context, context.getString(R.string.error_101)));
+                alert.show();
+            }
         }
     }
 
-    /**
-     * Método para la creación de diálogos relacionados con {@link GproWidgetConfigure}.
-     */
-    protected Dialog onCreateDialog(int id) {
-        Dialog dialog;
-        final Context context = GproWidgetConfigure.this;
-        switch(id) {
-        case DIALOG_ALERT_NAME_ID:
-            dialog = makeAlertDialog(context.getString(R.string.manager_name_mandatory));
-            break;
-        case DIALOG_ALERT_GROUP_NUMBER_ID:
-            dialog = makeAlertDialog(context.getString(R.string.group_number_mandatory));
-            break;
-        case DIALOG_ALERT_GROUP_NUMBER_ERROR_ID:
-            dialog = makeAlertDialog(context.getString(R.string.group_number_is_not_number));
-            break;
-        case DIALOG_ALERT_GROUP_TYPE_ERROR_ID:
-            dialog = makeAlertDialog(context.getString(R.string.group_type_mandatory));
-            break;
-        default:
-            dialog = null;
-        }
-        return dialog;
-    }
-
-    /**
-     * Construye un dialogo de aviso con un botón Ok, y con un mensaje de información.
-     * No se puede pulsar el botón 'volver' mientras se muestra este diálogo.
-     */
-    private Dialog makeAlertDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final Context context = GproWidgetConfigure.this;
-        builder.setMessage(message)
-        .setCancelable(false)
-        .setNegativeButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-           }
-       });
-       Dialog dialog = builder.create();
-       return dialog;
-    }
-    
     /**
      * Guardamos el nombre del manager en las preferencias.
      */

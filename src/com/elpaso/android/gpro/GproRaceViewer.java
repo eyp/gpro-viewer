@@ -56,7 +56,7 @@ public class GproRaceViewer extends Activity {
          */
         @Override
         protected void onPreExecute() {
-            progressDialog = UIHelper.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog = UIHelper.makeProgressDialog(context, getString(R.string.loading));
             progressDialog.show();
         }
 

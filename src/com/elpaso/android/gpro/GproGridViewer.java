@@ -63,7 +63,7 @@ public class GproGridViewer extends ListActivity {
          */
         @Override
         protected void onPreExecute() {
-            progressDialog = UIHelper.makeProgressDialog(context, getText(R.string.loading));
+            progressDialog = UIHelper.makeProgressDialog(context, getString(R.string.loading));
             progressDialog.show();
         }
 
@@ -86,7 +86,7 @@ public class GproGridViewer extends ListActivity {
             if (drivers == null) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle("Error");
-                alertDialog.setMessage("(" + context.getString(R.string.code) + " 100): " + context.getString(R.string.error_100));
+                alertDialog.setMessage(UIHelper.makeErrorMessage(context, context.getString(R.string.error_100)));
                 alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
                     return;
