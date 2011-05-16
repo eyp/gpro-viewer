@@ -113,6 +113,10 @@ public class GproGridViewer extends ListActivity {
                                 nameText.setTextAppearance(context, R.style.highlightedText);
                                 positionText.setTextAppearance(context, R.style.highlightedText);
                                 timeText.setTextAppearance(context, R.style.highlightedText);
+                            } else {
+                                nameText.setTextAppearance(context, R.style.normalText);
+                                positionText.setTextAppearance(context, R.style.normalText);
+                                timeText.setTextAppearance(context, R.style.normalText);
                             }
                         }
                         return v;
