@@ -33,9 +33,9 @@ public class XmlGridParser extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         currentElement = true;
-        if (qName.equalsIgnoreCase("grid")) {
+        if (qName.equalsIgnoreCase("grid") || localName.equalsIgnoreCase("grid")) {
             this.grid = new ArrayList<GridPosition>();
-        } else if (qName.equalsIgnoreCase("manager")) {
+        } else if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
             this.currentPosition = new GridPosition();
         }
     }
@@ -46,25 +46,25 @@ public class XmlGridParser extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         currentElement = false;
-        if (qName.equalsIgnoreCase("position")) {
+        if (qName.equalsIgnoreCase("position") || localName.equalsIgnoreCase("position")) {
             this.currentPosition.setPosition(Integer.valueOf(currentValue));
-        } else if (qName.equalsIgnoreCase("name")) {
+        } else if (qName.equalsIgnoreCase("name") || localName.equalsIgnoreCase("name")) {
             this.currentPosition.setName(currentValue);
-        } else if (qName.equalsIgnoreCase("shortedname")) {
+        } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
             this.currentPosition.setShortedName(currentValue);
-        } else if (qName.equalsIgnoreCase("country")) {
+        } else if (qName.equalsIgnoreCase("country") || localName.equalsIgnoreCase("country")) {
             this.currentPosition.setCountry(currentValue);
-        } else if (qName.equalsIgnoreCase("idm")) {
+        } else if (qName.equalsIgnoreCase("idm") || localName.equalsIgnoreCase("idm")) {
             this.currentPosition.setIdm(Integer.valueOf(currentValue));
-        } else if (qName.equalsIgnoreCase("tyresupplier")) {
+        } else if (qName.equalsIgnoreCase("tyresupplier") || localName.equalsIgnoreCase("tyresupplier")) {
             this.currentPosition.setTyreSupplier(currentValue);
-        } else if (qName.equalsIgnoreCase("points")) {
+        } else if (qName.equalsIgnoreCase("points") || localName.equalsIgnoreCase("points")) {
             this.currentPosition.setPoints(Integer.valueOf(currentValue));
-        } else if (qName.equalsIgnoreCase("time")) {
+        } else if (qName.equalsIgnoreCase("time") || localName.equalsIgnoreCase("time")) {
             this.currentPosition.setTime(currentValue);
-        } else if (qName.equalsIgnoreCase("gap")) {
+        } else if (qName.equalsIgnoreCase("gap") || localName.equalsIgnoreCase("gap")) {
             this.currentPosition.setGap(currentValue);
-        } else if (qName.equalsIgnoreCase("manager")) {
+        } else if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
             this.grid.add(this.currentPosition);
         }
     }

@@ -55,15 +55,15 @@ public class XmlGroupManagersParser extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         currentElement = false;
-        if (localName.equalsIgnoreCase("firstname")) {
+        if (qName.equalsIgnoreCase("firstname") || localName.equalsIgnoreCase("firstname")) {
             this.currentManager.setName(currentValue);
-        } else if (localName.equalsIgnoreCase("lastname")) {
+        } else if (qName.equalsIgnoreCase("lastname") || localName.equalsIgnoreCase("lastname")) {
             this.currentManager.setLastName(currentValue);
-        } else if (localName.equalsIgnoreCase("country")) {
+        } else if (qName.equalsIgnoreCase("country") || localName.equalsIgnoreCase("country")) {
             this.currentManager.setCountry(currentValue);
-        } else if (localName.equalsIgnoreCase("idm")) {
+        } else if (qName.equalsIgnoreCase("idm") || localName.equalsIgnoreCase("idm")) {
             this.currentManager.setIdm(Integer.valueOf(currentValue));
-        } else if (localName.equalsIgnoreCase("manager")) {
+        } else if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
             this.managers.add(this.currentManager);
         }
     }
