@@ -1,8 +1,24 @@
+/*
+ * Copyright 2011 Eduardo Yáñez Parareda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.elpaso.android.gpro;
 
 import java.util.List;
 
 import com.elpaso.android.gpro.beans.GridPosition;
+import com.elpaso.android.gpro.beans.Manager;
 import com.elpaso.android.gpro.exceptions.ParseException;
 
 import android.app.AlertDialog;
@@ -21,7 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * Activity para mostrar la parrilla de salida completa. Es una lista con los pilotos, y sus tiempos de clasificación.
+ * This screen shows the grid updated. List of managers who are qualified and their qualification times.
  * 
  * @author eduardo.yanez
  */
@@ -29,12 +45,12 @@ public class GproGridViewer extends ListActivity {
     private static final String TAG = GproGridViewer.class.getName();
     
 	/** 
-	 * Se llama cuando la activity es creada. 
+	 * Called on activity creation. 
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        // Recuperamos el identificador del widget que ha llamado, y si no es válido, terminamos.
+		// Get caller widget's identifier, if it isn't valid then finish app
 		int appWidgetId = UtilHelper.getWidgetId(this.getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             Log.w(TAG, "Widget identifier is invalid");
@@ -46,7 +62,7 @@ public class GproGridViewer extends ListActivity {
 	}
 
 	/**
-	 * Clase para que la conexión a la web, y la carga de los datos sea asíncrona y thread-safe.
+	 * With this class connection to GPRO site & recover of information is asynchronous and thread-safe
 	 */
     private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<GridPosition>> {
         private Context context;
@@ -59,7 +75,7 @@ public class GproGridViewer extends ListActivity {
         }
 
         /**
-         * Mostramos un diálogo de 'Cargando...' o con el mensaje que sea.
+         * Shows a progress dialog while this task is recovering information.
          */
         @Override
         protected void onPreExecute() {
@@ -68,7 +84,7 @@ public class GproGridViewer extends ListActivity {
         }
 
         /**
-         * Leemos de la web los pilotos que están en la parrilla de clasificación
+         * Recovers qualification information for every manager qualified. 
          */
         protected List<GridPosition> doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
@@ -80,7 +96,7 @@ public class GproGridViewer extends ListActivity {
         }
 
         /**
-         * Actualizamos la lista de pilotos.
+         * Updates view.
          */
         protected void onPostExecute(List<GridPosition> drivers) {
             if (drivers == null) {
@@ -106,8 +122,8 @@ public class GproGridViewer extends ListActivity {
                             TextView positionText = (TextView) v.findViewById(R.id.line_position);
                             TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
                             TextView timeText = (TextView) v.findViewById(R.id.line_time);
-                            positionText.setText(String.valueOf(driver.getPosition()));
-                            timeText.setText(driver.getTime() + " (" + driver.getGap() + ")");
+                            positionText.setText(String.valueOf(driver.getQualificationTimeGrid().getPosition()));
+                            timeText.setText(String.format("%s (%s)", driver.getQualificationTimeGrid().getTime(), driver.getQualificationTimeGrid().getGap()));
                             nameText.setText(driver.getName());
                             if (driver.getIdm().equals(managerId)) {
                                 nameText.setTextAppearance(context, R.style.highlightedText);

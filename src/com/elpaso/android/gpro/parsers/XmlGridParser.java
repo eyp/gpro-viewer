@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Eduardo Yáñez Parareda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.elpaso.android.gpro.parsers;
 
 import java.util.ArrayList;
@@ -10,7 +25,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.elpaso.android.gpro.beans.GridPosition;
 
 /**
- * Parsea las respuestas del servicio XML de GPRO que contiene la información de la parrilla de salida.
+ * Parses the response from the service StartingGridXML which contains the current grid qualification status.
  * 
  * @author eduardo.yanez
  */
@@ -28,7 +43,7 @@ public class XmlGridParser extends DefaultHandler {
     }
 
     /**
-     * Called when tag starts <name>...
+     * Called when tag starts <manager>...
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -41,13 +56,13 @@ public class XmlGridParser extends DefaultHandler {
     }
 
     /**
-     * Called when tag closing </name>...
+     * Called when tag closing </manager>...
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         currentElement = false;
         if (qName.equalsIgnoreCase("position") || localName.equalsIgnoreCase("position")) {
-            this.currentPosition.setPosition(Integer.valueOf(currentValue));
+            this.currentPosition.getQualificationTimeGrid().setPosition(Integer.valueOf(currentValue));
         } else if (qName.equalsIgnoreCase("name") || localName.equalsIgnoreCase("name")) {
             this.currentPosition.setName(currentValue);
         } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
@@ -61,9 +76,9 @@ public class XmlGridParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("points") || localName.equalsIgnoreCase("points")) {
             this.currentPosition.setPoints(Integer.valueOf(currentValue));
         } else if (qName.equalsIgnoreCase("time") || localName.equalsIgnoreCase("time")) {
-            this.currentPosition.setTime(currentValue);
+            this.currentPosition.getQualificationTimeGrid().setTime(currentValue);
         } else if (qName.equalsIgnoreCase("gap") || localName.equalsIgnoreCase("gap")) {
-            this.currentPosition.setGap(currentValue);
+            this.currentPosition.getQualificationTimeGrid().setGap(currentValue);
         } else if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
             this.grid.add(this.currentPosition);
         }

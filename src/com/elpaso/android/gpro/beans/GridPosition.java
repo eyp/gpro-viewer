@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Eduardo Yáñez Parareda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.elpaso.android.gpro.beans;
 
 /**
@@ -6,56 +21,46 @@ package com.elpaso.android.gpro.beans;
  * @author eduardo.yanez
  */
 public class GridPosition extends Manager {
-	private String shortedName;
-	private Integer position;
-	private String time;
-	private String gap;
-	private String tyreSupplier;
-	private Integer points = 0;
+    private String shortedName;
+    private QualificationTime qualificationTimeGrid = new QualificationTime();
+    private QualificationTime qualificationTimeOne;
+    private QualificationTime qualificationTimeTwo;
 
-    public Integer getPosition() {
-		return position;
-	}
-	public void setPosition(Integer position) {
-		this.position = position;
-	}
     public String getShortedName() {
         return shortedName;
     }
+
     public void setShortedName(String shortedName) {
         this.shortedName = shortedName;
     }
-	public String getTime() {
-		return time;
-	}
-	public void setTime(String time) {
-		this.time = time;
-	}
-	public String getGap() {
-		return gap;
-	}
-	public void setGap(String gap) {
-		this.gap = gap;
-	}
-	
-    public String getTyreSupplier() {
-        return tyreSupplier;
+
+    public QualificationTime getQualificationTimeGrid() {
+        return qualificationTimeGrid;
     }
-    public void setTyreSupplier(String tyreSupplier) {
-        this.tyreSupplier = tyreSupplier;
+
+    public void setQualificationTimeGrid(QualificationTime qualificationTimeGrid) {
+        this.qualificationTimeGrid = qualificationTimeGrid;
     }
-    public Integer getPoints() {
-        return points;
+
+    public QualificationTime getQualificationTimeOne() {
+        return qualificationTimeOne;
     }
-    public void setPoints(Integer points) {
-        this.points = points;
+
+    public void setQualificationTimeOne(QualificationTime qualificationTimeOne) {
+        this.qualificationTimeOne = qualificationTimeOne;
     }
-    public String shortToString() {
-        return String.format("%d - %s (%s)", position, time, gap);
+
+    public QualificationTime getQualificationTimeTwo() {
+        return qualificationTimeTwo;
     }
-    
+
+    public void setQualificationTimeTwo(QualificationTime qualificationTimeTwo) {
+        this.qualificationTimeTwo = qualificationTimeTwo;
+    }
+
     @Override
     public String toString() {
-        return String.format("%d - %s, %s (%s)", position, name, time, gap);
+        return String.format("%d - %s, %s (%s)", qualificationTimeGrid.getPosition(), name, qualificationTimeGrid.getTime(),
+                qualificationTimeGrid.getGap());
     }
 }
