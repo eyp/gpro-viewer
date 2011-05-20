@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Eduardo Yáñez Parareda
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.elpaso.android.gpro;
 
 import java.io.IOException;
@@ -35,7 +50,7 @@ import com.elpaso.android.gpro.parsers.XmlGridParser;
 import com.elpaso.android.gpro.parsers.XmlGroupManagersParser;
 
 /**
- * Utilidades varias para el widget y la aplicación.
+ * Utility methods for recovering information from the GRPO site.
  * 
  * @author eduardo.yanez
  */
@@ -44,7 +59,10 @@ public class GproDAO {
     private static final String TAG = GproDAO.class.getName();
     
     /**
-     * Recupera la información de la carrera en formato ligero. 
+     * Reads light race page content.
+     *  
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
      */
     public static String getLightRaceInfo(Context context, int widgetId) {
         HtmlParser parser = new HtmlParser();
@@ -54,49 +72,44 @@ public class GproDAO {
     }
     
     /**
-     * Recupera la lista de pilotos que están clasificados en la parrilla de salida, o una lista
-     * vacía si no hay ninguno. 
+     * Gets a managers list who are already qualified, or an empty list if nobody has qualified yet.
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
      */
     public static List<GridPosition> findGridPositions(Context context, int widgetId) throws ParseException {
         List<GridPosition> drivers = null;
-        if (context.getString(R.string.services).equals("on")) {
-            try {
-                Log.d(TAG, "Parsing XML response for grid positions");
-                SAXParserFactory spf = SAXParserFactory.newInstance();
-                SAXParser sp = spf.newSAXParser();
-                XMLReader xr = sp.getXMLReader();
-    
-                String group = GproWidgetConfigure.loadGroupId(context, widgetId);
-                if (group == null) {
-                    Log.d(TAG, "Group is null, do nothing");
-                    return new ArrayList<GridPosition>();
-                }
-                Log.d(TAG, "Group ID: " + group);
-                URL sourceUrl = new URL(getQualificationPage(group, context));
-    
-                XmlGridParser parser = new XmlGridParser();
-                xr.setContentHandler(parser);
-                xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
-                drivers = parser.getGrid();
-                Log.d(TAG, drivers.size() + " drivers are already qualified");
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing XML grid service response", e);
-                throw new ParseException("Error parsing XML grid service response");
-            }
-        } else {
-            Log.d(TAG, "Parsing HTML response for grid positions");
-            HtmlParser parser = new HtmlParser();
+        try {
+            Log.d(TAG, "Parsing XML response for grid positions");
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            SAXParser sp = spf.newSAXParser();
+            XMLReader xr = sp.getXMLReader();
+
             String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+            if (group == null) {
+                Log.d(TAG, "Group is null, do nothing");
+                return new ArrayList<GridPosition>();
+            }
             Log.d(TAG, "Group ID: " + group);
-            String gridPageContent = getData(getQualificationPage(group, context));
-            drivers = parser.parseGridPage(gridPageContent);
+            URL sourceUrl = new URL(getQualificationPage(group, context));
+
+            XmlGridParser parser = new XmlGridParser();
+            xr.setContentHandler(parser);
+            xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
+            drivers = parser.getGrid();
             Log.d(TAG, drivers.size() + " drivers are already qualified");
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing XML grid service response", e);
+            throw new ParseException("Error parsing XML grid service response");
         }
         return drivers;
     }
     
     /**
-     * Recupera la lista de pilotos del grupo configurado. 
+     * Reads managers from the configured group.
+     *  
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
      */
     public static List<Manager> findGroupMembers(Context context, int widgetId) throws ParseException {
         List<Manager> managers = null;
@@ -123,7 +136,12 @@ public class GproDAO {
     }
     
     /**
-     * Recupera la lista de pilotos del grupo configurado. 
+     * Reads managers from a group.
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
+     * @param groupType Group type (Rookie, Amateur, Pro, Master, Elite).
+     * @param groupNumber For Elite this must empty.
      */
     public static List<Manager> findGroupMembers(Context context, int widgetId, String groupType, String groupNumber) throws ParseException {
         List<Manager> managers = null;
@@ -156,8 +174,8 @@ public class GproDAO {
      * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
      * @return La información de clasificación del piloto, o null si no se ha clasificado.
      */
-    public static GridPosition findGridManagerPosition(List<GridPosition> drivers, String managerName) {
-        for (GridPosition driver : drivers) {
+    public static Manager findGridManagerPosition(List<GridPosition> drivers, String managerName) {
+        for (Manager driver : drivers) {
             if (driver.getName().equals(managerName)) {
                 return driver;
             }
@@ -224,6 +242,12 @@ public class GproDAO {
         return request;
     }
     
+    /**
+     * Reads an URL content.
+     * 
+     * @param url URL to read.
+     * @return a String with the page's content.
+     */
     public static String getData(String url) {
         String pageContent = "";
         try {
@@ -251,27 +275,4 @@ public class GproDAO {
         }
         return pageContent;
     }
-    
-    /*
-    private void updateWidget() {
-        dialog = GproUtils.makeProgressDialog(context, "Hooooooooooola");
-        dialog.show();
-        handler = new Handler() {
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                case 1:
-                    dialog.dismiss();
-                    break;
-                default:
-                    break;
-                }
-            }
-        };
-        thread = new Thread() {
-            public void run() {
-                handler.sendEmptyMessage(1);
-            };
-        };
-        thread.start();
-    }*/
 }
