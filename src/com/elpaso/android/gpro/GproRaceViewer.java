@@ -15,10 +15,14 @@
  */
 package com.elpaso.android.gpro;
 
+import com.elpaso.android.gpro.exceptions.ConfigurationException;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +33,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 /**
- * Activity para mostrar el estado de la carrera actual.
+ * Activity which shows the current race's lap.
  * 
  * @author eduardo.yanez
  */
@@ -37,7 +41,7 @@ public class GproRaceViewer extends Activity {
     private static final String TAG = "GproRaceViewer";
     
 	/** 
-	 * Se llama cuando la activity es creada. 
+	 * Called when this activity is created. 
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -54,7 +58,7 @@ public class GproRaceViewer extends Activity {
 	}
 
     /**
-     * Clase para que la conexión a la web, y la carga de los datos sea asíncrona y thread-safe.
+     * Class used to have an asynchronous connection and thread-safe.
      */
     private class DownloadRaceInfoTask extends AsyncTask<Integer, Void, String> {
         private Context context;
@@ -67,7 +71,7 @@ public class GproRaceViewer extends Activity {
         }
 
         /**
-         * Mostramos un diálogo de 'Cargando...' o con el mensaje que sea.
+         * Shows a progress dialog.
          */
         @Override
         protected void onPreExecute() {
@@ -76,36 +80,53 @@ public class GproRaceViewer extends Activity {
         }
 
         /**
-         * Leemos de la web la información de la carrera.
+         * Reads race's info from light page.
          */
         @Override
         protected String doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
-            return GproDAO.getLightRaceInfo(context, appWidgets[0]);
+            try {
+                return GproDAO.getLightRaceInfo(context, appWidgets[0]);
+            } catch (ConfigurationException e) {
+                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                alertDialog.setTitle("Error");
+                alertDialog.setMessage(UIHelper.makeErrorMessage(context, e.getLocalizedMessage()));
+                alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    return;
+                } });
+                return null;
+            }
         }
 
         /**
-         * Actualizamos la vista con la información de la carrera.
+         * Updates the view with race info read at doInBackground.
          */
         @Override
         protected void onPostExecute(String race) {
-            ScrollView scroll = new ScrollView(this.context);
-            TableLayout tl = new TableLayout(this.context);
-            Button refresh = new Button(context);
-            refresh.setText(R.string.refresh);
-            refresh.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View paramView) {
-                    new DownloadRaceInfoTask(context).execute(widgetId);
-                }
-            });
-            TextView tv = new TextView(this.context);
-            tv.setText(race);
-            tv.setTextAppearance(context, R.style.boldText);
-            tl.addView(refresh);
-            tl.addView(tv);
-            scroll.addView(tl);
-            progressDialog.dismiss();
-            setContentView(scroll);
+            if (race == null) {
+                progressDialog.dismiss();
+                Log.w(TAG, "Race info can't be read");
+                finish();
+            } else {
+                ScrollView scroll = new ScrollView(this.context);
+                TableLayout tl = new TableLayout(this.context);
+                Button refresh = new Button(context);
+                refresh.setText(R.string.refresh);
+                refresh.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View paramView) {
+                        new DownloadRaceInfoTask(context).execute(widgetId);
+                    }
+                });
+                TextView tv = new TextView(this.context);
+                tv.setText(race);
+                tv.setTextAppearance(context, R.style.boldText);
+                tl.addView(refresh);
+                tl.addView(tv);
+                scroll.addView(tl);
+                progressDialog.dismiss();
+                setContentView(scroll);
+            }
         }
     }
 }

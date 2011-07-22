@@ -41,13 +41,15 @@ import org.xml.sax.XMLReader;
 import android.content.Context;
 import android.util.Log;
 
-import com.elpaso.android.gpro.beans.GridPosition;
+import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Manager;
+import com.elpaso.android.gpro.exceptions.ConfigurationException;
 import com.elpaso.android.gpro.exceptions.ParseException;
 import com.elpaso.android.gpro.parsers.HtmlParser;
 import com.elpaso.android.gpro.parsers.ParserHelper;
 import com.elpaso.android.gpro.parsers.XmlGridParser;
 import com.elpaso.android.gpro.parsers.XmlGroupManagersParser;
+import com.elpaso.android.gpro.parsers.XmlQualificationsParser;
 
 /**
  * Utility methods for recovering information from the GRPO site.
@@ -55,16 +57,17 @@ import com.elpaso.android.gpro.parsers.XmlGroupManagersParser;
  * @author eduardo.yanez
  */
 public class GproDAO {
-    
     private static final String TAG = GproDAO.class.getName();
+    private static final String ENCODING = "UTF-8";
     
     /**
      * Reads light race page content.
      *  
      * @param context Application context.
      * @param widgetId Widget's identifier.
+     * @throws ConfigurationException if group information can't be calculated.
      */
-    public static String getLightRaceInfo(Context context, int widgetId) {
+    public static String getLightRaceInfo(Context context, int widgetId) throws ConfigurationException {
         HtmlParser parser = new HtmlParser();
         String group = GproWidgetConfigure.loadGroupId(context, widgetId);
         String raceInfo = parser.parseLightRacePage(getLightRacePageContent(group, context));
@@ -77,8 +80,8 @@ public class GproDAO {
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    public static List<GridPosition> findGridPositions(Context context, int widgetId) throws ParseException {
-        List<GridPosition> drivers = null;
+    public static List<Position> findGridPositions(Context context, int widgetId) throws ParseException {
+        List<Position> drivers = null;
         try {
             Log.d(TAG, "Parsing XML response for grid positions");
             SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -88,10 +91,10 @@ public class GproDAO {
             String group = GproWidgetConfigure.loadGroupId(context, widgetId);
             if (group == null) {
                 Log.d(TAG, "Group is null, do nothing");
-                return new ArrayList<GridPosition>();
+                return new ArrayList<Position>();
             }
             Log.d(TAG, "Group ID: " + group);
-            URL sourceUrl = new URL(getQualificationPage(group, context));
+            URL sourceUrl = new URL(getGridPage(group, context));
 
             XmlGridParser parser = new XmlGridParser();
             xr.setContentHandler(parser);
@@ -103,6 +106,67 @@ public class GproDAO {
             throw new ParseException("Error parsing XML grid service response");
         }
         return drivers;
+    }
+    
+    /**
+     * Reads standings for Q1 session.
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
+     */
+    public static List<Position> findQualification1Standings(Context context, int widgetId) throws ParseException {
+        List<Position> positions = new ArrayList<Position>();
+        XmlQualificationsParser parser = parseQualificationsPage(context, widgetId);
+        if (parser != null) {
+            positions = parser.getQ1Standings();
+        }
+        return positions;
+    }
+    
+    /**
+     * Reads standings for Q2 session.
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
+     */
+    public static List<Position> findQualification2Standings(Context context, int widgetId) throws ParseException {
+        List<Position> positions = new ArrayList<Position>();
+        XmlQualificationsParser parser = parseQualificationsPage(context, widgetId);
+        if (parser != null) {
+            positions = parser.getQ2Standings();
+        }
+        return positions;
+    }
+    
+    /**
+     * Reads standings for Q1 & Q2
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
+     */
+    private static XmlQualificationsParser parseQualificationsPage(Context context, int widgetId) throws ParseException {
+        XmlQualificationsParser parser = null;
+        try {
+            Log.d(TAG, "Parsing XML response for qualifications standings");
+            SAXParserFactory spf = SAXParserFactory.newInstance();
+            SAXParser sp = spf.newSAXParser();
+            XMLReader xr = sp.getXMLReader();
+
+            String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+            if (group == null) {
+                return null;
+            }
+            Log.d(TAG, "Group ID: " + group);
+            URL sourceUrl = new URL(getQualificationsPage(group, context));
+
+            parser = new XmlQualificationsParser();
+            xr.setContentHandler(parser);
+            xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing XML qualifications service response", e);
+            throw new ParseException("Error parsing XML qualifications service response");
+        }
+        return parser;
     }
     
     /**
@@ -168,22 +232,6 @@ public class GproDAO {
     }
     
     /**
-     * Obtiene la información de la clasificación de un piloto.
-     * 
-     * @param drivers a lista de pilotos clasificados hasta el momento.
-     * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
-     * @return La información de clasificación del piloto, o null si no se ha clasificado.
-     */
-    public static Manager findGridManagerPosition(List<GridPosition> drivers, String managerName) {
-        for (Manager driver : drivers) {
-            if (driver.getName().equals(managerName)) {
-                return driver;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Lee el contenido de la página ligera de la carrera.
      * 
      * @param group String con el tipo de grupo y el número: <em>Rookie - 217</em>
@@ -197,7 +245,7 @@ public class GproDAO {
             if (context.getString(R.string.test).equals("on")) {
                 request = context.getString(R.string.test_race_light_page);
             } else {
-                request = context.getString(R.string.race_light_page) + URLEncoder.encode(group, "UTF-8");
+                request = context.getString(R.string.race_light_page) + URLEncoder.encode(group, ENCODING);
             }
             racePage = getData(request);
         } catch (UnsupportedEncodingException e) {
@@ -206,21 +254,27 @@ public class GproDAO {
         return racePage;
     }
     
-    private static String getQualificationPage(String group, Context context) {
+    private static String getGridPage(String group, Context context) {
         String request = "";
         try {
             if (context.getString(R.string.test).equals("on")) {
-                if (context.getString(R.string.services).equals("on")) {
-                    request = context.getString(R.string.test_service_grid_page);
-                } else {
-                    request = context.getString(R.string.test_grid_page);
-                }
+                request = context.getString(R.string.test_service_grid_page);
             } else {
-                if (context.getString(R.string.services).equals("on")) {
-                    request = context.getString(R.string.service_grid_page) + URLEncoder.encode(group, "UTF-8");
-                } else {
-                    request = context.getString(R.string.grid_page) + URLEncoder.encode(group, "UTF-8");
-                }
+                request = context.getString(R.string.service_grid_page) + URLEncoder.encode(group, ENCODING);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return request;
+    }
+    
+    private static String getQualificationsPage(String group, Context context) {
+        String request = "";
+        try {
+            if (context.getString(R.string.test).equals("on")) {
+                request = context.getString(R.string.test_service_qualifications_page);
+            } else {
+                request = context.getString(R.string.service_qualifications_page) + URLEncoder.encode(group, ENCODING);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -234,7 +288,7 @@ public class GproDAO {
             if (context.getString(R.string.test).equals("on")) {
                 request = context.getString(R.string.test_service_group_members_page);
             } else {
-                request = context.getString(R.string.service_group_members_page) + URLEncoder.encode(group, "UTF-8");
+                request = context.getString(R.string.service_group_members_page) + URLEncoder.encode(group, ENCODING);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

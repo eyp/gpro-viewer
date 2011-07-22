@@ -17,7 +17,7 @@ package com.elpaso.android.gpro;
 
 import java.util.List;
 
-import com.elpaso.android.gpro.beans.GridPosition;
+import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.exceptions.ParseException;
 
 import android.app.PendingIntent;
@@ -84,9 +84,9 @@ public class GproWidgetProvider extends AppWidgetProvider {
         String info = "";
         if (managerIdm != null) {
             Log.d(TAG, "Getting grid position");
-            GridPosition driver = findGridManagerPosition(context, widgetId, managerIdm);
+            Position driver = findGridManagerPosition(context, widgetId, managerIdm);
             if (driver != null) {
-                info = driver.getQualificationTimeGrid().toString();
+                info = String.format("%d - %s", driver.getPosition(), driver.getTime().toString());
             } else {
                 info = context.getString(R.string.not_qualified);
             }
@@ -107,9 +107,9 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
      * @return La información de clasificación del piloto, o null si no se ha clasificado.
      */
-    private static GridPosition findGridManagerPosition(Context context, int widgetId, Integer managerIdm) throws ParseException {
-        List<GridPosition> drivers = GproDAO.findGridPositions(context, widgetId); 
-        for (GridPosition driver : drivers) {
+    private static Position findGridManagerPosition(Context context, int widgetId, Integer managerIdm) throws ParseException {
+        List<Position> drivers = GproDAO.findGridPositions(context, widgetId); 
+        for (Position driver : drivers) {
             if (driver.getIdm().equals(managerIdm)) {
                 return driver;
             }
@@ -122,14 +122,14 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * ni nada más.
      * @deprecated De momento no se debe usar.
      */
-    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, GridPosition gridPosition) {
+    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Position gridPosition) {
         Log.d(TAG, "Updating driver info for GproWidget [" + widgetId + "]");
         // Obtenemos las vistas del widget
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
 
         String info = "";
         if (gridPosition != null) {
-            info = gridPosition.getQualificationTimeGrid().toString();
+            info = gridPosition.getTime().toString();
         } else {
             info = context.getString(R.string.not_qualified);
         }

@@ -16,22 +16,13 @@
 package com.elpaso.android.gpro.beans;
 
 /**
- * Represents a manager's qualification time.
+ * Represents a manager's time in a qualification session or in a race.
  * 
  * @author eduardo.yanez
  */
-public class QualificationTime {
-    private Integer position;
+public class Time {
     private String time;
     private String gap;
-
-    public Integer getPosition() {
-        return position;
-    }
-
-    public void setPosition(Integer position) {
-        this.position = position;
-    }
 
     public String getTime() {
         return time;
@@ -51,6 +42,10 @@ public class QualificationTime {
 
     @Override
     public String toString() {
-        return String.format("%d - %s (%s)", position, time, gap);
+        if (time != null) {
+            return String.format("%s (%s)", time, gap);
+        } else {
+            return "";
+        }
     }
 }
