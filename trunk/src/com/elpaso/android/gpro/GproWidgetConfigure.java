@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.elpaso.android.gpro.beans.Manager;
+import com.elpaso.android.gpro.exceptions.ConfigurationException;
 import com.elpaso.android.gpro.exceptions.ParseException;
 
 /**
@@ -306,8 +307,9 @@ public class GproWidgetConfigure extends Activity {
      * recuperar la información de la parrilla de salida o de la clasificación, carrera, etc.
      * 
      * @return GroupType - GroupNumber, o si se trata de Elite, sólo el GroupType.
+     * @throws ConfigurationException if group can't be calculated. 
      */
-    static String loadGroupId(Context context, int appWidgetId) {
+    static String loadGroupId(Context context, int appWidgetId) throws ConfigurationException {
         String groupType = loadGroupType(context, appWidgetId);
         String group = null;
         if (groupType != null) {
@@ -316,6 +318,9 @@ public class GproWidgetConfigure extends Activity {
             } else {
                 group = String.format("%s - %s", loadGroupType(context, appWidgetId), loadGroupNumber(context, appWidgetId));
             }
+        }
+        if (group == null) {
+            throw new ConfigurationException(context.getString(R.string.error_102));
         }
         return group;
     }

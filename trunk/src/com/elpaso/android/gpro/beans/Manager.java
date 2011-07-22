@@ -21,7 +21,7 @@ package com.elpaso.android.gpro.beans;
  * @author eduardo.yanez
  */
 public class Manager {
-    private Integer idm = 0;
+    protected Integer idm = 0;
     protected String name;
     private String firstName;
     private String lastName;

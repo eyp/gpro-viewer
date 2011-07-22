@@ -17,10 +17,6 @@ package com.elpaso.android.gpro;
 
 import java.util.List;
 
-import com.elpaso.android.gpro.beans.GridPosition;
-import com.elpaso.android.gpro.beans.Manager;
-import com.elpaso.android.gpro.exceptions.ParseException;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -36,6 +32,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.elpaso.android.gpro.beans.Position;
+import com.elpaso.android.gpro.exceptions.ParseException;
+
 /**
  * This screen shows the grid updated. List of managers who are qualified and their qualification times.
  * 
@@ -50,13 +49,15 @@ public class GproGridViewer extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Get caller widget's identifier, if it isn't valid then finish app
+        //setContentView(R.layout.qualification_layout);
+
+        // Get caller widget's identifier, if it isn't valid then finish app
 		int appWidgetId = UtilHelper.getWidgetId(this.getIntent());
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             Log.w(TAG, "Widget identifier is invalid");
             finish();
         } else {
-            getListView().setDividerHeight(2);
+            //getListView().setDividerHeight(2);
             new DownloadGridInfoTask(this).execute(appWidgetId);
         }
 	}
@@ -64,7 +65,7 @@ public class GproGridViewer extends ListActivity {
 	/**
 	 * With this class connection to GPRO site & recover of information is asynchronous and thread-safe
 	 */
-    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<GridPosition>> {
+    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<Position>> {
         private Context context;
         private Integer widgetId;
         private ProgressDialog progressDialog;
@@ -86,10 +87,11 @@ public class GproGridViewer extends ListActivity {
         /**
          * Recovers qualification information for every manager qualified. 
          */
-        protected List<GridPosition> doInBackground(Integer... appWidgets) {
+        protected List<Position> doInBackground(Integer... appWidgets) {
             this.widgetId = appWidgets[0];
             try {
                 return GproDAO.findGridPositions(context, widgetId);
+                //return GproDAO.findQualification1Standings(context, widgetId);
             } catch (ParseException e) {
                 return null;
             }
@@ -98,7 +100,7 @@ public class GproGridViewer extends ListActivity {
         /**
          * Updates view.
          */
-        protected void onPostExecute(List<GridPosition> drivers) {
+        protected void onPostExecute(List<Position> drivers) {
             if (drivers == null) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle("Error");
@@ -109,7 +111,7 @@ public class GproGridViewer extends ListActivity {
                 } }); 
             } else {
                 final Integer managerId = GproWidgetConfigure.loadManagerIdm(context, widgetId);
-                ArrayAdapter<GridPosition> ad = new ArrayAdapter<GridPosition>(context, R.layout.grid_line, drivers) {
+                ArrayAdapter<Position> ad = new ArrayAdapter<Position>(context, R.layout.grid_line, drivers) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
                         View v = convertView;
@@ -117,14 +119,19 @@ public class GproGridViewer extends ListActivity {
                             LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                             v = vi.inflate(R.layout.grid_line, null);
                         }
-                        GridPosition driver = getItem(position);
+                        Position driver = getItem(position);
                         if (driver != null) {
                             TextView positionText = (TextView) v.findViewById(R.id.line_position);
                             TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
                             TextView timeText = (TextView) v.findViewById(R.id.line_time);
-                            positionText.setText(String.valueOf(driver.getQualificationTimeGrid().getPosition()));
-                            timeText.setText(String.format("%s (%s)", driver.getQualificationTimeGrid().getTime(), driver.getQualificationTimeGrid().getGap()));
-                            nameText.setText(driver.getName());
+                            if (driver.getPosition() == null) {
+                                // Not qualified yet
+                                positionText.setText("--");
+                            } else {
+                                positionText.setText(String.valueOf(driver.getPosition()));
+                            }
+                            timeText.setText(String.format("%s", driver.getTime().toString()));
+                            nameText.setText(String.format("%s - %d %s", driver.getName(), driver.getPoints(), context.getString(R.string.points)));
                             if (driver.getIdm().equals(managerId)) {
                                 nameText.setTextAppearance(context, R.style.highlightedText);
                                 positionText.setTextAppearance(context, R.style.highlightedText);
