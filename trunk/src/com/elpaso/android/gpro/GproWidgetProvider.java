@@ -29,7 +29,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
- * Widget para Gpro.
+ * Gpro widget.
  * 
  * @author eduardo.yanez
  */
@@ -41,11 +41,11 @@ public class GproWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "onUpdate");
         final int N = widgetIds.length;
 
-        // Por cada widget asociado al provider
+        // For each widget...
         for (int i = 0; i < N; i++) {
             int widgetId = widgetIds[i];
             try {
-                setUpWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerIdm(context, widgetId));
+                setUpWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerIdm(context));
             } catch (ParseException e) {
                 Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
             }
@@ -53,89 +53,68 @@ public class GproWidgetProvider extends AppWidgetProvider {
     }
 
     /**
-     * Inicializa el widget, configura los botones, y actualiza la información de la pantalla del widget. 
-     * Consulta la clasificación, y muestra la posición, el tiempo y la diferencia con el primer clasificado.
+     * Initializes the widget, buttons, and updates the information shown.
+     * Gets the qualification information, and shows the manager's position in the grid and the offset time related to the pole position.
      */
     static void setUpWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Integer managerIdm) throws ParseException {
         Log.d(TAG, "Setting up GproWidget [" + widgetId + "]");
-        // Obtenemos las vistas del widget
+        // Getting widget's views
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
 
-        // Crear un intent para lanzar una activity 
-        Intent intent = new Intent(context, GproGridViewer.class);
+        // Making an intent to launch the main activity 
+        //Intent intent = new Intent(context, GproGridViewer.class);
+        Intent intent = new Intent(context, GproViewer.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Asociamos la llamada al intent anterior en el onclick del botón
+        // Linking the intent's call to the button's onclick event
         Log.d(TAG, "Configuring grid button");
         views.setOnClickPendingIntent(R.id.grid_button, pendingIntent);
         
         // Crear un intent para lanzar una activity 
-        Intent intentRace = new Intent(context, GproRaceViewer.class);
-        intentRace.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        PendingIntent pendingIntentRace = PendingIntent.getActivity(context, 0, intentRace, PendingIntent.FLAG_UPDATE_CURRENT);
+//        Intent intentRace = new Intent(context, GproRaceViewer.class);
+//        intentRace.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+//        PendingIntent pendingIntentRace = PendingIntent.getActivity(context, 0, intentRace, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Asociamos la llamada al intent anterior en el onclick del botón
-        Log.d(TAG, "Configuring race button");
-        views.setOnClickPendingIntent(R.id.race_button, pendingIntentRace);
+//        Log.d(TAG, "Configuring race button");
+//        views.setOnClickPendingIntent(R.id.race_button, pendingIntentRace);
         
-        // Actualizamos el texto del widget
+        // Updating the text shown in the widget
         Log.d(TAG, "Updating widget info");
         String info = "";
         if (managerIdm != null) {
             Log.d(TAG, "Getting grid position");
-            Position driver = findGridManagerPosition(context, widgetId, managerIdm);
+            Position driver = findGridManagerPosition(context, managerIdm);
             if (driver != null) {
-                info = String.format("%d - %s", driver.getPosition(), driver.getTime().toString());
+                info = String.format("%02d - %s", driver.getPosition(), driver.getTime().toString());
             } else {
                 info = context.getString(R.string.not_qualified);
             }
         } else {
-            Log.w(TAG, "There isn't manager IDM configured");
+            Log.w(TAG, "There isn't a manager IDM configured");
             info = context.getString(R.string.not_qualified);
         }
         views.setTextViewText(R.id.text, info);
 
-        // Actualizar el widget
+        // Updating the widget
         appWidgetManager.updateAppWidget(widgetId, views);
         Log.d(TAG, "Set up finished");
     }
 
     /**
-     * Obtiene la información de la clasificación de un piloto, consultando primero la parrilla de clasificación.
+     * Gets the qualification information from a manager, reading the grid information firstly.
      * 
-     * @param managerName El nombre del manager tal y como está en Gpro, del que queremos obtener la información.
-     * @return La información de clasificación del piloto, o null si no se ha clasificado.
+     * @param managerIdm Manager's ID.
+     * @return Qualification information, or null if the manager isn't qualified yet.
      */
-    private static Position findGridManagerPosition(Context context, int widgetId, Integer managerIdm) throws ParseException {
-        List<Position> drivers = GproDAO.findGridPositions(context, widgetId); 
+    private static Position findGridManagerPosition(Context context, Integer managerIdm) throws ParseException {
+        List<Position> drivers = GproDAO.findGridPositions(context); 
         for (Position driver : drivers) {
             if (driver.getIdm().equals(managerIdm)) {
                 return driver;
             }
         }
         return null;
-    }
-
-    /**
-     * Actualiza la información de la pantalla del widget con los datos del piloto recibido. No actualiza ni los botones 
-     * ni nada más.
-     * @deprecated De momento no se debe usar.
-     */
-    static void updateWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Position gridPosition) {
-        Log.d(TAG, "Updating driver info for GproWidget [" + widgetId + "]");
-        // Obtenemos las vistas del widget
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
-
-        String info = "";
-        if (gridPosition != null) {
-            info = gridPosition.getTime().toString();
-        } else {
-            info = context.getString(R.string.not_qualified);
-        }
-        views.setTextViewText(R.id.text, info);
-
-        // Actualizar el widget
-        appWidgetManager.updateAppWidget(widgetId, views);
     }
 }

@@ -41,8 +41,9 @@ import org.xml.sax.XMLReader;
 import android.content.Context;
 import android.util.Log;
 
-import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Manager;
+import com.elpaso.android.gpro.beans.Position;
+import com.elpaso.android.gpro.beans.Q12Position;
 import com.elpaso.android.gpro.exceptions.ConfigurationException;
 import com.elpaso.android.gpro.exceptions.ParseException;
 import com.elpaso.android.gpro.parsers.HtmlParser;
@@ -67,9 +68,9 @@ public class GproDAO {
      * @param widgetId Widget's identifier.
      * @throws ConfigurationException if group information can't be calculated.
      */
-    public static String getLightRaceInfo(Context context, int widgetId) throws ConfigurationException {
+    public static String getLightRaceInfo(Context context) throws ConfigurationException {
         HtmlParser parser = new HtmlParser();
-        String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+        String group = GproWidgetConfigure.loadGroupId(context);
         String raceInfo = parser.parseLightRacePage(getLightRacePageContent(group, context));
         return raceInfo;
     }
@@ -80,7 +81,7 @@ public class GproDAO {
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    public static List<Position> findGridPositions(Context context, int widgetId) throws ParseException {
+    public static List<Position> findGridPositions(Context context) throws ParseException {
         List<Position> drivers = null;
         try {
             Log.d(TAG, "Parsing XML response for grid positions");
@@ -88,7 +89,7 @@ public class GproDAO {
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
-            String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+            String group = GproWidgetConfigure.loadGroupId(context);
             if (group == null) {
                 Log.d(TAG, "Group is null, do nothing");
                 return new ArrayList<Position>();
@@ -109,14 +110,29 @@ public class GproDAO {
     }
     
     /**
+     * Reads standings for Q1 & Q2 sessions.
+     * 
+     * @param context Application context.
+     * @param widgetId Widget's identifier.
+     */
+    public static List<Q12Position> findQualificationStandings(Context context) throws ParseException {
+        List<Q12Position> positions = new ArrayList<Q12Position>();
+        XmlQualificationsParser parser = parseQualificationsPage(context);
+        if (parser != null) {
+            positions = parser.getQualificationStandings();
+        }
+        return positions;
+    }
+    
+    /**
      * Reads standings for Q1 session.
      * 
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    public static List<Position> findQualification1Standings(Context context, int widgetId) throws ParseException {
+    public static List<Position> findQualification1Standings(Context context) throws ParseException {
         List<Position> positions = new ArrayList<Position>();
-        XmlQualificationsParser parser = parseQualificationsPage(context, widgetId);
+        XmlQualificationsParser parser = parseQualificationsPage(context);
         if (parser != null) {
             positions = parser.getQ1Standings();
         }
@@ -129,9 +145,9 @@ public class GproDAO {
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    public static List<Position> findQualification2Standings(Context context, int widgetId) throws ParseException {
+    public static List<Position> findQualification2Standings(Context context) throws ParseException {
         List<Position> positions = new ArrayList<Position>();
-        XmlQualificationsParser parser = parseQualificationsPage(context, widgetId);
+        XmlQualificationsParser parser = parseQualificationsPage(context);
         if (parser != null) {
             positions = parser.getQ2Standings();
         }
@@ -144,7 +160,7 @@ public class GproDAO {
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    private static XmlQualificationsParser parseQualificationsPage(Context context, int widgetId) throws ParseException {
+    private static XmlQualificationsParser parseQualificationsPage(Context context) throws ParseException {
         XmlQualificationsParser parser = null;
         try {
             Log.d(TAG, "Parsing XML response for qualifications standings");
@@ -152,7 +168,7 @@ public class GproDAO {
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
-            String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+            String group = GproWidgetConfigure.loadGroupId(context);
             if (group == null) {
                 return null;
             }
@@ -175,7 +191,7 @@ public class GproDAO {
      * @param context Application context.
      * @param widgetId Widget's identifier.
      */
-    public static List<Manager> findGroupMembers(Context context, int widgetId) throws ParseException {
+    public static List<Manager> findGroupMembers(Context context) throws ParseException {
         List<Manager> managers = null;
         try {
             Log.d(TAG, "Parsing XML response for group members");
@@ -183,7 +199,7 @@ public class GproDAO {
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
-            String group = GproWidgetConfigure.loadGroupId(context, widgetId);
+            String group = GproWidgetConfigure.loadGroupId(context);
             Log.d(TAG, "Group ID: " + group);
             URL sourceUrl = new URL(getGroupMembersPage(group, context));
 
@@ -207,7 +223,7 @@ public class GproDAO {
      * @param groupType Group type (Rookie, Amateur, Pro, Master, Elite).
      * @param groupNumber For Elite this must empty.
      */
-    public static List<Manager> findGroupMembers(Context context, int widgetId, String groupType, String groupNumber) throws ParseException {
+    public static List<Manager> findGroupMembers(Context context, String groupType, String groupNumber) throws ParseException {
         List<Manager> managers = null;
         try {
             Log.d(TAG, "Parsing XML response for group members");

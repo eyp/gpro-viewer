@@ -33,19 +33,12 @@
 	    android:orientation="horizontal" 
 	    android:layout_width="wrap_content"
 	    android:layout_height="fill_parent">
-	    <ImageView android:layout_height="100dp" android:layout_width="1dp" android:background="#999"/>
-	    <ImageButton
-	        android:id="@+id/race_button"
-	        android:background="@android:color/transparent"
-	        android:layout_width="50dp"
-	        android:layout_height="fill_parent"
-	        android:src="@drawable/button_race_layout"/>
-	    <ImageView android:layout_height="100dp" android:layout_width="1dp" android:background="#999"/>
+	    <ImageView android:layout_height="100dp" android:layout_marginLeft="40dip" android:layout_width="1dp" android:background="#999"/>
 	    <ImageButton
 	        android:id="@+id/grid_button"
 	        android:background="@android:color/transparent"
 	        android:layout_width="50dp"
 	        android:layout_height="fill_parent"
-	        android:src="@drawable/button_chrono_layout"/>
+	        android:src="@drawable/ic_tab_right_arrow"/>
     </LinearLayout>
 </LinearLayout>

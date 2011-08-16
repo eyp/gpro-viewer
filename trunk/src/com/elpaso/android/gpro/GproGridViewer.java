@@ -19,8 +19,6 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.app.ProgressDialog;
-import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -49,26 +47,14 @@ public class GproGridViewer extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        //setContentView(R.layout.qualification_layout);
-
-        // Get caller widget's identifier, if it isn't valid then finish app
-		int appWidgetId = UtilHelper.getWidgetId(this.getIntent());
-        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            Log.w(TAG, "Widget identifier is invalid");
-            finish();
-        } else {
-            //getListView().setDividerHeight(2);
-            new DownloadGridInfoTask(this).execute(appWidgetId);
-        }
+        new DownloadGridInfoTask(this).execute();
 	}
 
 	/**
 	 * With this class connection to GPRO site & recover of information is asynchronous and thread-safe
 	 */
-    private class DownloadGridInfoTask extends AsyncTask<Integer, Void, List<Position>> {
+    private class DownloadGridInfoTask extends AsyncTask<Void, Void, List<Position>> {
         private Context context;
-        private Integer widgetId;
-        private ProgressDialog progressDialog;
         
         public DownloadGridInfoTask(Context context) {
             super();
@@ -76,23 +62,14 @@ public class GproGridViewer extends ListActivity {
         }
 
         /**
-         * Shows a progress dialog while this task is recovering information.
-         */
-        @Override
-        protected void onPreExecute() {
-            progressDialog = UIHelper.makeProgressDialog(context, getString(R.string.loading));
-            progressDialog.show();
-        }
-
-        /**
          * Recovers qualification information for every manager qualified. 
          */
-        protected List<Position> doInBackground(Integer... appWidgets) {
-            this.widgetId = appWidgets[0];
+        protected List<Position> doInBackground(Void... params) {
             try {
-                return GproDAO.findGridPositions(context, widgetId);
-                //return GproDAO.findQualification1Standings(context, widgetId);
+                Log.d(TAG, "Getting grid information...");
+                return GproDAO.findGridPositions(context);
             } catch (ParseException e) {
+                Log.w(TAG, "Error parsing grid information from GPRO", e);
                 return null;
             }
         }
@@ -110,7 +87,7 @@ public class GproGridViewer extends ListActivity {
                     return;
                 } }); 
             } else {
-                final Integer managerId = GproWidgetConfigure.loadManagerIdm(context, widgetId);
+                final Integer managerId = GproWidgetConfigure.loadManagerIdm(context);
                 ArrayAdapter<Position> ad = new ArrayAdapter<Position>(context, R.layout.grid_line, drivers) {
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
@@ -128,7 +105,7 @@ public class GproGridViewer extends ListActivity {
                                 // Not qualified yet
                                 positionText.setText("--");
                             } else {
-                                positionText.setText(String.valueOf(driver.getPosition()));
+                                positionText.setText(String.format("%02d", driver.getPosition()));
                             }
                             timeText.setText(String.format("%s", driver.getTime().toString()));
                             nameText.setText(String.format("%s - %d %s", driver.getName(), driver.getPoints(), context.getString(R.string.points)));
@@ -146,14 +123,7 @@ public class GproGridViewer extends ListActivity {
                     }
                 };
                 setListAdapter(ad);
-                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                try {
-                    GproWidgetProvider.setUpWidget(context, appWidgetManager, widgetId, managerId);
-                } catch (ParseException e) {
-                    Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
-                }
             }
-            progressDialog.dismiss();
         }
     }
 }

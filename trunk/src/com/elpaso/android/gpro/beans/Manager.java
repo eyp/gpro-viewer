@@ -29,6 +29,9 @@ public class Manager {
     private Integer championships;
     private String tyreSupplier;
     private Integer points = 0;
+    private String tyreSupplierImageUrl;
+    private String liveryImageUrl;
+    private String flagImageUrl;
 
     public Integer getIdm() {
         return idm;
@@ -92,6 +95,30 @@ public class Manager {
 
     public void setPoints(Integer points) {
         this.points = points;
+    }
+    
+    public String getTyreSupplierImageUrl() {
+        return tyreSupplierImageUrl;
+    }
+
+    public void setTyreSupplierImageUrl(String tyreSupplierImageUrl) {
+        this.tyreSupplierImageUrl = tyreSupplierImageUrl;
+    }
+
+    public String getLiveryImageUrl() {
+        return liveryImageUrl;
+    }
+
+    public void setLiveryImageUrl(String liveryImageUrl) {
+        this.liveryImageUrl = liveryImageUrl;
+    }
+
+    public String getFlagImageUrl() {
+        return flagImageUrl;
+    }
+
+    public void setFlagImageUrl(String flagImageUrl) {
+        this.flagImageUrl = flagImageUrl;
     }
 
     @Override

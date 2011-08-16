@@ -19,6 +19,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
 import com.elpaso.android.gpro.beans.Position;
 
 /**
@@ -27,6 +29,8 @@ import com.elpaso.android.gpro.beans.Position;
  * @author eduardo.yanez
  */
 public class XmlGridParser extends DefaultHandler {
+    private static final String TAG = XmlGridParser.class.getName();
+    
     protected Boolean currentElement = false;
     protected String currentValue = null;
     protected Position currentPosition = null;
@@ -66,7 +70,12 @@ public class XmlGridParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("name") || localName.equalsIgnoreCase("name")) {
             this.currentPosition.setName(currentValue);
         } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
-            this.currentPosition.setShortedName(currentValue);
+            // Since very long names Removes the second surname of some shorted names in order to show right the information on the screen
+            String shortedName = this.currentValue; 
+            if (this.currentValue.substring(3).lastIndexOf(" ") > -1) {
+                shortedName = this.currentValue.substring(0, 2) + this.currentValue.substring(3, this.currentValue.substring(3).lastIndexOf(" ") + 3);
+            }
+            this.currentPosition.setShortedName(shortedName);
         } else if (qName.equalsIgnoreCase("country") || localName.equalsIgnoreCase("country")) {
             this.currentPosition.setCountry(currentValue);
         } else if (qName.equalsIgnoreCase("idm") || localName.equalsIgnoreCase("idm")) {
