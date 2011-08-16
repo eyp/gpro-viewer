@@ -15,8 +15,6 @@
     <TextView android:id="@+id/manager_name_label"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:text="@string/manager_name_label"/>
-<!--     <EditText android:id="@+id/manager_name_input_text"
-        android:layout_width="fill_parent" android:layout_height="wrap_content"/>-->
     <Spinner android:id="@+id/managers_spinner" android:layout_height="wrap_content" 
         android:layout_width="fill_parent" android:prompt="@string/spinner_prompt"></Spinner>
     <Button android:id="@+id/save_button" android:layout_width="wrap_content"

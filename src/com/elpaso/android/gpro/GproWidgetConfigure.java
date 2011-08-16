@@ -133,7 +133,7 @@ public class GproWidgetConfigure extends Activity {
                 return;
             }
             Manager manager = (Manager) managers.getSelectedItem();
-            saveManagerIdm(context, mAppWidgetId, manager.getIdm());
+            saveManagerIdm(context, manager.getIdm());
 
             if (groupTypes.getSelectedItem() == null) {
                 showDialog(DIALOG_ALERT_GROUP_TYPE_ERROR_ID);
@@ -156,13 +156,13 @@ public class GproWidgetConfigure extends Activity {
                     return;
                 } 
             }
-            saveGroupType(context, mAppWidgetId, groupType);
-            saveGroupNumber(context, mAppWidgetId, groupNumber);
+            saveGroupType(context, groupType);
+            saveGroupNumber(context, groupNumber);
 
             // Actualizamos la información que se muestra en el widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             try {
-                GproWidgetProvider.setUpWidget(context, appWidgetManager, mAppWidgetId, loadManagerIdm(context, mAppWidgetId));
+                GproWidgetProvider.setUpWidget(context, appWidgetManager, mAppWidgetId, loadManagerIdm(context));
             } catch (ParseException e) {
                 Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
             }
@@ -238,7 +238,7 @@ public class GproWidgetConfigure extends Activity {
          */
         protected List<Manager> doInBackground(Integer... params) {
             try {
-                return GproDAO.findGroupMembers(context, mAppWidgetId, 
+                return GproDAO.findGroupMembers(context, 
                         groupTypes.getSelectedItem().toString(), 
                         groupNumbers.getSelectedItem().toString());
             } catch (ParseException e) {
@@ -269,36 +269,36 @@ public class GproWidgetConfigure extends Activity {
     /**
      * Guardamos el nombre del manager en las preferencias.
      */
-    static void saveManagerName(Context context, int appWidgetId, String name) {
+    static void saveManagerName(Context context, String name) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + PREF_MANAGER_NAME_KEY + appWidgetId, name.trim());
+        prefs.putString(PREF_PREFIX_KEY + PREF_MANAGER_NAME_KEY, name.trim());
         prefs.commit();
     }
 
     /**
      * Guardamos el IDM del manager en las preferencias.
      */
-    static void saveManagerIdm(Context context, int appWidgetId, Integer idm) {
+    static void saveManagerIdm(Context context, Integer idm) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + PREF_MANAGER_IDM_KEY + appWidgetId, idm.toString());
+        prefs.putString(PREF_PREFIX_KEY + PREF_MANAGER_IDM_KEY, idm.toString());
         prefs.commit();
     }
 
     /**
      * Guardamos el tipo de grupo en las preferencias.
      */
-    static void saveGroupType(Context context, int appWidgetId, String groupType) {
+    static void saveGroupType(Context context, String groupType) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY + appWidgetId, groupType.trim());
+        prefs.putString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY, groupType.trim());
         prefs.commit();
     }
 
     /**
      * Guardamos el número de grupo en las preferencias.
      */
-    static void saveGroupNumber(Context context, int appWidgetId, String groupNumber) {
+    static void saveGroupNumber(Context context, String groupNumber) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
-        prefs.putString(PREF_PREFIX_KEY + PREF_GROUP_NUMBER_KEY + appWidgetId, groupNumber.trim());
+        prefs.putString(PREF_PREFIX_KEY + PREF_GROUP_NUMBER_KEY, groupNumber.trim());
         prefs.commit();
     }
 
@@ -309,14 +309,14 @@ public class GproWidgetConfigure extends Activity {
      * @return GroupType - GroupNumber, o si se trata de Elite, sólo el GroupType.
      * @throws ConfigurationException if group can't be calculated. 
      */
-    static String loadGroupId(Context context, int appWidgetId) throws ConfigurationException {
-        String groupType = loadGroupType(context, appWidgetId);
+    static String loadGroupId(Context context) throws ConfigurationException {
+        String groupType = loadGroupType(context);
         String group = null;
         if (groupType != null) {
             if (context.getString(R.string.elite).equals(groupType)) {
-                group = loadGroupType(context, appWidgetId);
+                group = loadGroupType(context);
             } else {
-                group = String.format("%s - %s", loadGroupType(context, appWidgetId), loadGroupNumber(context, appWidgetId));
+                group = String.format("%s - %s", loadGroupType(context), loadGroupNumber(context));
             }
         }
         if (group == null) {
@@ -328,9 +328,9 @@ public class GproWidgetConfigure extends Activity {
     /**
      * Recupera el nombre del mánager de la configuración.<br>
      */
-    static String loadManagerName(Context context, int appWidgetId) {
+    static String loadManagerName(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String name = prefs.getString(PREF_PREFIX_KEY + PREF_MANAGER_NAME_KEY + appWidgetId, null);
+        String name = prefs.getString(PREF_PREFIX_KEY + PREF_MANAGER_NAME_KEY, null);
         if (name != null) {
             return name;
         } else {
@@ -341,9 +341,9 @@ public class GproWidgetConfigure extends Activity {
     /**
      * Recupera el IDM del mánager de la configuración.<br>
      */
-    static Integer loadManagerIdm(Context context, int appWidgetId) {
+    static Integer loadManagerIdm(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String idm = prefs.getString(PREF_PREFIX_KEY + PREF_MANAGER_IDM_KEY + appWidgetId, null);
+        String idm = prefs.getString(PREF_PREFIX_KEY + PREF_MANAGER_IDM_KEY, null);
         if (idm != null) {
             return Integer.valueOf(idm);
         } else {
@@ -354,9 +354,9 @@ public class GproWidgetConfigure extends Activity {
     /**
      * Recupera el tipo de grupo configurado por el usuario (Rookie, Amateur, Pro, Master o Elite).<br>
      */
-    private static String loadGroupType(Context context, int appWidgetId) {
+    private static String loadGroupType(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String groupType = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY + appWidgetId, null);
+        String groupType = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_TYPE_KEY, null);
         if (groupType != null) {
             return groupType;
         } else {
@@ -367,9 +367,9 @@ public class GproWidgetConfigure extends Activity {
     /**
      * Recupera el número de grupo configurado por el usuario.<br>
      */
-    private static String loadGroupNumber(Context context, int appWidgetId) {
+    private static String loadGroupNumber(Context context) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
-        String groupNumber = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_NUMBER_KEY + appWidgetId, null);
+        String groupNumber = prefs.getString(PREF_PREFIX_KEY + PREF_GROUP_NUMBER_KEY, null);
         if (groupNumber != null) {
             return groupNumber;
         } else {
