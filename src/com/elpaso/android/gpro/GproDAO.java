@@ -48,7 +48,6 @@ import com.elpaso.android.gpro.exceptions.ConfigurationException;
 import com.elpaso.android.gpro.exceptions.ParseException;
 import com.elpaso.android.gpro.parsers.HtmlParser;
 import com.elpaso.android.gpro.parsers.ParserHelper;
-import com.elpaso.android.gpro.parsers.XmlGridParser;
 import com.elpaso.android.gpro.parsers.XmlGroupManagersParser;
 import com.elpaso.android.gpro.parsers.XmlQualificationsParser;
 
@@ -65,7 +64,6 @@ public class GproDAO {
      * Reads light race page content.
      *  
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      * @throws ConfigurationException if group information can't be calculated.
      */
     public static String getLightRaceInfo(Context context) throws ConfigurationException {
@@ -76,44 +74,9 @@ public class GproDAO {
     }
     
     /**
-     * Gets a managers list who are already qualified, or an empty list if nobody has qualified yet.
-     * 
-     * @param context Application context.
-     * @param widgetId Widget's identifier.
-     */
-    public static List<Position> findGridPositions(Context context) throws ParseException {
-        List<Position> drivers = null;
-        try {
-            Log.d(TAG, "Parsing XML response for grid positions");
-            SAXParserFactory spf = SAXParserFactory.newInstance();
-            SAXParser sp = spf.newSAXParser();
-            XMLReader xr = sp.getXMLReader();
-
-            String group = GproWidgetConfigure.loadGroupId(context);
-            if (group == null) {
-                Log.d(TAG, "Group is null, do nothing");
-                return new ArrayList<Position>();
-            }
-            Log.d(TAG, "Group ID: " + group);
-            URL sourceUrl = new URL(getGridPage(group, context));
-
-            XmlGridParser parser = new XmlGridParser();
-            xr.setContentHandler(parser);
-            xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
-            drivers = parser.getGrid();
-            Log.d(TAG, drivers.size() + " drivers are already qualified");
-        } catch (Exception e) {
-            Log.e(TAG, "Error parsing XML grid service response", e);
-            throw new ParseException("Error parsing XML grid service response");
-        }
-        return drivers;
-    }
-    
-    /**
      * Reads standings for Q1 & Q2 sessions.
      * 
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      */
     public static List<Q12Position> findQualificationStandings(Context context) throws ParseException {
         List<Q12Position> positions = new ArrayList<Q12Position>();
@@ -125,10 +88,23 @@ public class GproDAO {
     }
     
     /**
+     * Reads standings for the grid session.
+     * 
+     * @param context Application context.
+     */
+    public static List<Position> findGridPositions(Context context) throws ParseException {
+        List<Position> positions = new ArrayList<Position>();
+        XmlQualificationsParser parser = parseQualificationsPage(context);
+        if (parser != null) {
+            positions = parser.getGrid();
+        }
+        return positions;
+    }
+    
+    /**
      * Reads standings for Q1 session.
      * 
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      */
     public static List<Position> findQualification1Standings(Context context) throws ParseException {
         List<Position> positions = new ArrayList<Position>();
@@ -143,7 +119,6 @@ public class GproDAO {
      * Reads standings for Q2 session.
      * 
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      */
     public static List<Position> findQualification2Standings(Context context) throws ParseException {
         List<Position> positions = new ArrayList<Position>();
@@ -158,7 +133,6 @@ public class GproDAO {
      * Reads standings for Q1 & Q2
      * 
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      */
     private static XmlQualificationsParser parseQualificationsPage(Context context) throws ParseException {
         XmlQualificationsParser parser = null;
@@ -189,7 +163,6 @@ public class GproDAO {
      * Reads managers from the configured group.
      *  
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      */
     public static List<Manager> findGroupMembers(Context context) throws ParseException {
         List<Manager> managers = null;
@@ -219,7 +192,6 @@ public class GproDAO {
      * Reads managers from a group.
      * 
      * @param context Application context.
-     * @param widgetId Widget's identifier.
      * @param groupType Group type (Rookie, Amateur, Pro, Master, Elite).
      * @param groupNumber For Elite this must empty.
      */
@@ -268,20 +240,6 @@ public class GproDAO {
             e.printStackTrace();
         }
         return racePage;
-    }
-    
-    private static String getGridPage(String group, Context context) {
-        String request = "";
-        try {
-            if (context.getString(R.string.test).equals("on")) {
-                request = context.getString(R.string.test_service_grid_page);
-            } else {
-                request = context.getString(R.string.service_grid_page) + URLEncoder.encode(group, ENCODING);
-            }
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return request;
     }
     
     private static String getQualificationsPage(String group, Context context) {

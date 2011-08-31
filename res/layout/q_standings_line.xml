@@ -2,88 +2,90 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:stretchColumns="1">
+    android:stretchColumns="1,2">
     <TableRow>
-	    <RelativeLayout
-	        android:id="@+id/q1_cell" 
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent">
-	        
-	        <TextView
-	            android:id="@+id/line_position"
-	            
-	            android:layout_width="wrap_content"
-	            android:layout_height="fill_parent"
-	            
-	            android:layout_alignParentTop="true"
-	            android:layout_alignParentBottom="true"
-	            android:layout_marginRight="6dip"
-	            
-	            android:textSize="22sp"/>
-	    
-	        <TextView
-	            android:id="@+id/q1_line_driver_name"
-	            
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content" 
-	            
-	            android:layout_toRightOf="@id/line_position"
-	            android:layout_alignParentRight="true"
-	            android:layout_alignParentTop="true"
-	            android:layout_alignWithParentIfMissing="true"
-	                    
-	            android:gravity="center_vertical"
-	            
-	            android:textSize="16sp"/>
-	        <TextView  
-	            android:id="@+id/q1_line_time"
-	    
-	            android:layout_width="fill_parent"
-	            android:layout_height="wrap_content" 
-	            
-	            android:layout_toRightOf="@id/line_position"
-	            android:layout_alignParentBottom="true"
-	            android:layout_alignParentRight="true"
-	            android:layout_below="@id/q1_line_driver_name"
-	            
-	            android:singleLine="true"
-	            android:ellipsize="marquee"
-	            
-	            android:textSize="14sp"/>
-	    </RelativeLayout>
-	    <RelativeLayout 
-	        android:id="@+id/q2_cell" 
+       <TextView
+           android:id="@+id/line_position"
+           android:layout_width="wrap_content"
+           android:layout_height="fill_parent"
+           android:layout_marginRight="4dip"
+           android:textSize="20sp"/>
+
+	   <RelativeLayout
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:paddingLeft="40dip">
-	        
+	        android:layout_marginRight="5dp">
+	    
+            <TextView
+                android:id="@+id/q1_line_driver_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textSize="15sp"/>
+
+            <TextView  
+                android:id="@+id/q1_line_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:layout_below="@+id/q1_line_driver_name"
+                android:textSize="14sp"/>
+
+            <LinearLayout 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true">
+                <ImageView 
+                    android:id="@+id/q1_tyres"
+                    android:layout_height="20dp"
+                    android:layout_width="20dp"
+                    android:layout_marginRight="5dp"/>        
+                <ImageView 
+                    android:id="@+id/q1_flag"
+                    android:layout_height="20dp"
+                    android:layout_width="20dp"/>        
+            </LinearLayout>
+       </RelativeLayout>
+
+       <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
 	        <TextView
 	            android:id="@+id/q2_line_driver_name"
-	            
-	            android:layout_width="fill_parent"
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" 
-	            
-	            android:layout_alignParentRight="true"
-	            android:layout_alignParentTop="true"
-	            android:layout_alignWithParentIfMissing="true"
-	                    
-	            android:gravity="center_vertical"
-	            
-	            android:textSize="16sp"/>
-	        <TextView  
-	            android:id="@+id/q2_line_time"
-	    
-	            android:layout_width="fill_parent"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+	            android:textSize="15sp"/>
+
+            <TextView  
+                android:id="@+id/q2_line_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:layout_toRightOf="@+id/line_position"
+                android:layout_below="@+id/q2_line_driver_name"           
+                android:textSize="14sp"/>
+
+	        <LinearLayout 
+	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content" 
-	            
-	            android:layout_alignParentBottom="true"
+	            android:orientation="horizontal" 
 	            android:layout_alignParentRight="true"
-	            android:layout_below="@id/q2_line_driver_name"
-	            
-	            android:singleLine="true"
-	            android:ellipsize="marquee"
-	            
-	            android:textSize="14sp"/>
+	            android:layout_alignParentTop="true">
+	            <ImageView 
+	                android:id="@+id/q2_tyres"
+	                android:layout_height="20dp"
+	                android:layout_width="20dp"
+	                android:layout_marginRight="5dp"/>        
+                <ImageView 
+                    android:id="@+id/q2_flag"
+                    android:layout_height="20dp"
+                    android:layout_width="20dp"/>        
+	        </LinearLayout>
 	    </RelativeLayout>
     </TableRow>
 </TableLayout>

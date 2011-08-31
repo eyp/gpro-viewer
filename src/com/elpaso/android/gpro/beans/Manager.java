@@ -33,6 +33,23 @@ public class Manager {
     private String liveryImageUrl;
     private String flagImageUrl;
 
+    public Manager() {
+    }
+    
+    public Manager(Manager source) {
+        this.idm = source.idm;
+        this.name = source.name;
+        this.firstName = source.firstName;
+        this.lastName = source.lastName;
+        this.country = source.country;
+        this.championships = source.championships;
+        this.tyreSupplier = source.tyreSupplier;
+        this.points = source.points;
+        this.tyreSupplierImageUrl = source.tyreSupplierImageUrl;
+        this.liveryImageUrl = source.liveryImageUrl;
+        this.flagImageUrl = source.flagImageUrl;
+    }
+    
     public Integer getIdm() {
         return idm;
     }

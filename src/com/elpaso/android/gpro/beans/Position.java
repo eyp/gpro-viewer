@@ -25,6 +25,16 @@ public class Position extends Manager {
     private String shortedName;
     private Time time = new Time();
 
+    public Position() {
+    }
+    
+    public Position(Position source) {
+        super(source);
+        this.position = source.position;
+        this.shortedName = source.shortedName;
+        this.time = new Time(source.time);
+    }
+    
     public Integer getPosition() {
         return position;
     }

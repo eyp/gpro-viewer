@@ -47,6 +47,12 @@ public class GproRaceViewer extends Activity {
         new DownloadRaceInfoTask(this.getParent()).execute();
 	}
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new DownloadRaceInfoTask(this.getParent()).execute();
+    }
+
     /**
      * Class used to have an asynchronous connection and thread-safe.
      */
