@@ -17,7 +17,7 @@
     <string name="ok">Aceptar</string>
     <string name="code">Código</string>
     <string name="loading">Cargando. Espere, por favor...</string>
-    <string name="points">puntos</string>
+    <!-- <string name="points">puntos</string>-->
 
     <!-- Mensajes -->
     <string name="error_100">100 - Ocurrió un error al obtener información de GPRO</string>

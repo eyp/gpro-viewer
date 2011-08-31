@@ -24,6 +24,19 @@ public class Time {
     private String time;
     private String gap;
 
+    public Time() {
+    }
+    
+    public Time(String time, String gap) {
+        this.time = time;
+        this.gap = gap;
+    }
+    
+    public Time(Time source) {
+        this.time = source.time;
+        this.gap = source.gap;
+    }
+    
     public String getTime() {
         return time;
     }

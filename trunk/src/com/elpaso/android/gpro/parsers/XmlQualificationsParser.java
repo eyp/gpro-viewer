@@ -13,15 +13,22 @@
 package com.elpaso.android.gpro.parsers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Q12Position;
+import com.elpaso.android.gpro.beans.Time;
 
 /**
  * Parser for Qualifying12StandingsXML service.<br>
@@ -63,7 +70,7 @@ import com.elpaso.android.gpro.beans.Q12Position;
  * 
  * @author eduardo.yanez
  */
-public class XmlQualificationsParser extends XmlGridParser {
+public class XmlQualificationsParser extends DefaultHandler {
     
     private List<Position> q1;
     private List<Position> q2;
@@ -71,6 +78,17 @@ public class XmlQualificationsParser extends XmlGridParser {
     private Map<String, Position> auxPositions = new HashMap<String, Position>();
     private Boolean isQ1 = false;
     private Boolean isQ2 = false;
+    private Boolean currentElement = false;
+    private String currentValue = null;
+    private Position currentPosition = null;
+    private List<Position> grid;
+
+    /**
+     * After parsing the XML you can call this method in order to get the information for the grid standings.
+     */
+    public List<Position> getGrid() {
+        return grid;
+    }
 
     /**
      * After parsing the XML you can call this method in order to get the information for each row of Q1 & Q2 standings.
@@ -101,10 +119,12 @@ public class XmlQualificationsParser extends XmlGridParser {
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        super.startElement(uri, localName, qName, attributes);
+        currentElement = true;
+        currentValue = "";
 
         if (qName.equalsIgnoreCase("grid") || localName.equalsIgnoreCase("grid")) {
             this.q12 = new ArrayList<Q12Position>();
+            this.grid = new ArrayList<Position>();
         } else if (qName.equalsIgnoreCase("qualification1") || localName.equalsIgnoreCase("qualification1")) {
             this.q1 = new ArrayList<Position>();
             this.isQ1 = true;
@@ -123,9 +143,39 @@ public class XmlQualificationsParser extends XmlGridParser {
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        super.endElement(uri, localName, qName);
-        
-        if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
+        currentElement = false;
+        if (qName.equalsIgnoreCase("position") || localName.equalsIgnoreCase("position")) {
+            if (!"".equals(currentValue.trim())) {
+                this.currentPosition.setPosition(Integer.valueOf(currentValue));
+            }
+        } else if (qName.equalsIgnoreCase("name") || localName.equalsIgnoreCase("name")) {
+            this.currentPosition.setName(currentValue);
+        } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
+            // Since very long names Removes the second surname of some shorted names in order to show right the information on the screen
+            String shortedName = this.currentValue; 
+            if (this.currentValue.length() >=3 && this.currentValue.substring(3).lastIndexOf(" ") > -1) {
+                shortedName = this.currentValue.substring(0, 2) + this.currentValue.substring(3, this.currentValue.substring(3).lastIndexOf(" ") + 3);
+            }
+            this.currentPosition.setShortedName(shortedName);
+        } else if (qName.equalsIgnoreCase("country") || localName.equalsIgnoreCase("country")) {
+            this.currentPosition.setCountry(currentValue);
+        } else if (qName.equalsIgnoreCase("idm") || localName.equalsIgnoreCase("idm")) {
+            this.currentPosition.setIdm(Integer.valueOf(currentValue));
+        } else if (qName.equalsIgnoreCase("championships") || localName.equalsIgnoreCase("championships")) {
+            this.currentPosition.setChampionships(Integer.valueOf(currentValue));
+        } else if (qName.equalsIgnoreCase("tyresupplier") || localName.equalsIgnoreCase("tyresupplier")) {
+            this.currentPosition.setTyreSupplier(currentValue);
+        } else if (qName.equalsIgnoreCase("points") || localName.equalsIgnoreCase("points")) {
+            this.currentPosition.setPoints(Integer.valueOf(currentValue));
+        } else if (qName.equalsIgnoreCase("time") || localName.equalsIgnoreCase("time")) {
+            if (!"".equals(currentValue.trim())) {
+                this.currentPosition.getTime().setTime(currentValue);
+            }
+        } else if (qName.equalsIgnoreCase("gap") || localName.equalsIgnoreCase("gap")) {
+            if (!"".equals(currentValue.trim())) {
+                this.currentPosition.getTime().setGap(currentValue);
+            }
+        } else if (qName.equalsIgnoreCase("manager") || localName.equalsIgnoreCase("manager")) {
             if (this.isQ1) {
                 this.q1.add(this.currentPosition);
                 this.auxPositions.put("Q1-" + this.currentPosition.getPosition(), this.currentPosition);
@@ -135,25 +185,86 @@ public class XmlQualificationsParser extends XmlGridParser {
             }
         } else if (qName.equalsIgnoreCase("grid") || localName.equalsIgnoreCase("grid")) {
             // Makes the list of Q12Positions
-            for (int i = 1; i <= 40; i++) {
-                Position qPos = this.auxPositions.get("Q1-" + i);
-                if (qPos != null) {
-                    Q12Position q12Pos = new Q12Position();
-                    q12Pos.setQ1Position(qPos);
-                    qPos = this.auxPositions.get("Q2-" + i);
-                    if (qPos != null) {
-                        q12Pos.setQ2Position(qPos);
-                    }
-                    this.q12.add(q12Pos);
-                }
-            }
+            this.buildQ12ListPositions();
+            this.buildGrid();
             this.auxPositions.clear();
         } else if (qName.equalsIgnoreCase("flag_url") || localName.equalsIgnoreCase("flag_url")) {
-            this.currentPosition.setTyreSupplierImageUrl(this.currentValue);
+            this.currentPosition.setFlagImageUrl(this.currentValue);
         } else if (qName.equalsIgnoreCase("LIVERY_URL") || localName.equalsIgnoreCase("LIVERY_URL")) {
             this.currentPosition.setLiveryImageUrl(this.currentValue);
         } else if (qName.equalsIgnoreCase("TYRESUPPLIER_URL") || localName.equalsIgnoreCase("TYRESUPPLIER_URL")) {
             this.currentPosition.setTyreSupplierImageUrl(this.currentValue);
+        }
+    }
+
+    /**
+     * Called to get tag characters ( ex:- <name>AndroidPeople</name>
+     * -- to get AndroidPeople Character )
+     */
+    @Override
+    public void characters(char[] ch, int start, int length) throws SAXException {
+        if (currentElement) {
+            currentValue = new String(ch, start, length);
+            currentElement = false;
+        }
+    }
+
+    /**
+     * For each row builds a pair with Q1 position i & Q2 position i
+     */
+    private void buildQ12ListPositions() {
+        for (int i = 1; i <= 40; i++) {
+            Position qPos = this.auxPositions.get("Q1-" + i);
+            // If there is a manager qualified in this Q1's position, builds a new pair
+            if (qPos != null) {
+                Q12Position q12Pos = new Q12Position();
+                q12Pos.setQ1Position(qPos);
+                qPos = this.auxPositions.get("Q2-" + i);
+                if (qPos != null) {
+                    q12Pos.setQ2Position(qPos);
+                }
+                this.q12.add(q12Pos);
+            }
+        }
+    }
+    
+    /**
+     * For each manager qualified in Q1, look for his Q2's time and add it to his Q1's time. Then
+     * order the list by total ascending time.
+     */
+    private void buildGrid() {
+        for (Position q1Pos : this.q1) {
+            Position q2Pos = this.q2.get(this.q2.indexOf(q1Pos));
+            if (q2Pos.getTime().getTime() != null) {
+                DateTimeFormatter dtfTime = new DateTimeFormatterBuilder()
+                    .appendMinuteOfHour(1).appendLiteral(":")
+                    .appendSecondOfMinute(1).appendLiteral(".")
+                    .appendMillisOfSecond(3).toFormatter();
+                DateTimeFormatter dtfGap = new DateTimeFormatterBuilder()
+                    .appendLiteral("+")
+                    .appendSecondOfMinute(1).appendLiteral(".")
+                    .appendMillisOfSecond(3).toFormatter();
+                DateTime q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                DateTime q1Gap = DateTime.parse(q1Pos.getTime().getGap(), dtfGap);
+                DateTime gridTime = q1Time.plus(DateTime.parse(q2Pos.getTime().getTime(), dtfTime).getMillis());
+                DateTime gridGap = q1Gap.plus(DateTime.parse(q2Pos.getTime().getGap(), dtfGap).getMillis());
+                Position gridPos = new Position(q1Pos);
+                gridPos.setTime(new Time(gridTime.toString(dtfTime), gridGap.toString(dtfGap)));
+                this.grid.add(gridPos);
+            }
+        }
+        
+        // Sorts the list through the total time calculated in the previous step
+        Collections.sort(this.grid, new Comparator<Position>() {
+            public int compare(Position pos1, Position pos2) {
+                return pos1.getTime().getTime().compareTo(pos2.getTime().getTime());
+            }
+        });
+        
+        // Updates the position because positions have Q1 position number.
+        for (int i = 0; i < this.grid.size(); i++) {
+            Position pos = this.grid.get(i);
+            pos.setPosition(i + 1);
         }
     }
 }

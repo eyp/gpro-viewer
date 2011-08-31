@@ -37,19 +37,15 @@ public class GproViewer extends TabActivity {
         Resources res = getResources(); 
         // The activity TabHost
         TabHost tabHost = getTabHost();  
-        // Resusable TabSpec for each tab
-        TabHost.TabSpec spec;  
-        // Reusable Intent for each tab
-        Intent intent;  
-
-        // Create an Intent to launch an Activity for the tab (to be reused)
-        intent = new Intent().setClass(this, GproGridViewer.class);
 
         // Initialize a TabSpec for each tab and add it to the TabHost
+        Intent intent = null;
+        TabHost.TabSpec spec = null;
+        
+        intent = new Intent().setClass(this, GproGridViewer.class);
         spec = tabHost.newTabSpec("grid").setIndicator(this.getString(R.string.view_grid), res.getDrawable(R.drawable.ic_tab_timer)).setContent(intent);
         tabHost.addTab(spec);
 
-        // Do the same for the other tabs
         intent = new Intent().setClass(this, GproQualificationStandings.class);
         spec = tabHost.newTabSpec("qualification_times").setIndicator(this.getString(R.string.qualification12), res.getDrawable(R.drawable.ic_tab_timer)).setContent(intent);
         tabHost.addTab(spec);

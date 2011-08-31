@@ -4,6 +4,7 @@
     <string name="test">off</string>
     
     <!-- Producción -->
+    <string name="site_url">http://www.gpro.net/en</string>
     <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
     <string name="test_race_light_page">http://192.168.6.20:80/gpro/race_light.html?Group=</string>
     
@@ -35,7 +36,7 @@
     <string name="ok">Ok</string>
     <string name="code">Code</string>
     <string name="loading">Loading. Please wait...</string>
-    <string name="points">points</string>
+    <string name="points">pts</string>
     
     <!-- Tipos de grupos -->
     <string name="rookie">Rookie</string>

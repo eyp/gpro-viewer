@@ -15,6 +15,8 @@
  */
 package com.elpaso.android.gpro;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -28,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.elpaso.android.gpro.beans.Position;
@@ -51,7 +54,14 @@ public class GproQualificationStandings extends ListActivity {
         new DownloadQualificationStandingsTask(this).execute();
 	}
 
-	/**
+	
+	@Override
+    protected void onResume() {
+        super.onResume();
+        new DownloadQualificationStandingsTask(this).execute();
+    }
+
+    /**
 	 * With this class connection to GPRO site & recover of information is asynchronous and thread-safe
 	 */
     private class DownloadQualificationStandingsTask extends AsyncTask<Void, Void, List<Q12Position>> {
@@ -116,6 +126,25 @@ public class GproQualificationStandings extends ListActivity {
                                 TextView q1TimeText = (TextView) v.findViewById(R.id.q1_line_time);
                                 q1TimeText.setText(String.format("%s", q1Pos.getTime().toString()));
                                 q1NameText.setText(String.format("%s", q1Pos.getShortedName()));
+
+                                ImageView q1Flag = (ImageView) v.findViewById(R.id.q1_flag);
+                                if (q1Flag != null) {
+                                    try {
+                                        q1Flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q1Pos.getFlagImageUrl())));
+                                    } catch (MalformedURLException e) {
+                                        Log.w(TAG, "Malformed URL for flag image: " + q1Pos.getFlagImageUrl() , e);
+                                    }
+                                }
+                                
+                                // Only for landscape mode
+                                ImageView q1Tyres = (ImageView) v.findViewById(R.id.q1_tyres);
+                                if (q1Tyres != null) {
+                                    try {
+                                        q1Tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q1Pos.getTyreSupplierImageUrl())));
+                                    } catch (MalformedURLException e) {
+                                        Log.w(TAG, "Malformed URL for tyres image: " + q1Pos.getTyreSupplierImageUrl() , e);
+                                    }
+                                }
                                 
                                 // Highlight manager in Q1 cell
                                 if (q1Pos.getIdm().equals(managerId)) {
@@ -138,7 +167,26 @@ public class GproQualificationStandings extends ListActivity {
                                     
                                     q2TimeText.setText(String.format("%s", q2Pos.getTime().toString()));
                                     q2NameText.setText(String.format("%s", q2Pos.getShortedName()));
+                                
+                                    ImageView q2Flag = (ImageView) v.findViewById(R.id.q2_flag);
+                                    if (q2Flag != null) { 
+                                        try {
+                                            q2Flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getFlagImageUrl())));
+                                        } catch (MalformedURLException e) {
+                                            Log.w(TAG, "Malformed URL for flag image: " + q2Pos.getFlagImageUrl() , e);
+                                        }
+                                    }
 
+                                    // Only for landscape mode
+                                    ImageView q2Tyres = (ImageView) v.findViewById(R.id.q2_tyres);
+                                    if (q2Tyres != null) {
+                                        try {
+                                            q2Tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getTyreSupplierImageUrl())));
+                                        } catch (MalformedURLException e) {
+                                            Log.w(TAG, "Malformed URL for tyres image: " + q2Pos.getTyreSupplierImageUrl() , e);
+                                        }
+                                    }
+                                    
                                     // Highlight manager in Q2 cell
                                     if (q2Pos.getIdm().equals(managerId)) {
                                         q2NameText.setTextAppearance(context, R.style.highlightedText);

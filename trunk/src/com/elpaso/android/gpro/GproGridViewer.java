@@ -15,12 +15,16 @@
  */
 package com.elpaso.android.gpro;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.elpaso.android.gpro.beans.Position;
@@ -49,6 +54,12 @@ public class GproGridViewer extends ListActivity {
 		super.onCreate(savedInstanceState);
         new DownloadGridInfoTask(this).execute();
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new DownloadGridInfoTask(this).execute();
+    }
 
 	/**
 	 * With this class connection to GPRO site & recover of information is asynchronous and thread-safe
@@ -109,6 +120,51 @@ public class GproGridViewer extends ListActivity {
                             }
                             timeText.setText(String.format("%s", driver.getTime().toString()));
                             nameText.setText(String.format("%s - %d %s", driver.getName(), driver.getPoints(), context.getString(R.string.points)));
+
+                            ImageView livery = (ImageView) v.findViewById(R.id.livery);
+                            if (livery != null) {
+                                Log.d(TAG, "Creating livery image");
+                                try {
+                                    Log.d(TAG, "Loading bitmap for livery image");
+                                    Bitmap bmp = UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getLiveryImageUrl()));
+                                    
+                                    int w = bmp.getWidth();
+                                    int h = bmp.getHeight();
+                                    // Setting post rotate to 90
+                                    Matrix mtx = new Matrix();
+                                    mtx.postRotate(90);
+                                    // Rotating Bitmap
+                                    Log.d(TAG, "Rotating livery image");
+                                    Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
+
+                                    Log.d(TAG, "Setting livery image");
+                                    livery.setImageBitmap(rotatedBMP);
+                                } catch (MalformedURLException e) {
+                                    Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
+                                }
+                            }
+                            
+                            ImageView flag = (ImageView) v.findViewById(R.id.flag);
+                            if (flag != null) {
+                                try {
+                                    Log.d(TAG, "Loading bitmap for flag image");
+                                    flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getFlagImageUrl())));
+                                } catch (MalformedURLException e) {
+                                    Log.w(TAG, "Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
+                                }
+                            }
+                            
+                            // Only for landscape mode
+                            ImageView tyres = (ImageView) v.findViewById(R.id.tyres);
+                            if (tyres != null) {
+                                try {
+                                    Log.d(TAG, "Loading bitmap for tyres image");
+                                    tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getTyreSupplierImageUrl())));
+                                } catch (MalformedURLException e) {
+                                    Log.w(TAG, "Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
+                                }
+                            }
+                            
                             if (driver.getIdm().equals(managerId)) {
                                 nameText.setTextAppearance(context, R.style.highlightedText);
                                 positionText.setTextAppearance(context, R.style.highlightedText);
