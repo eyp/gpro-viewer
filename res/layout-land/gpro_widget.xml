@@ -33,7 +33,7 @@
 	    android:orientation="horizontal" 
 	    android:layout_width="wrap_content"
 	    android:layout_height="fill_parent">
-	    <ImageView android:layout_height="115dp" android:layout_marginLeft="70dip" android:layout_width="1dp" android:background="#999"/>
+	    <ImageView android:layout_height="115dp" android:layout_marginLeft="70dp" android:layout_width="1dp" android:background="#999"/>
 	    <ImageButton
 	        android:id="@+id/grid_button"
 	        android:background="@android:color/transparent"

@@ -238,7 +238,7 @@ public class XmlQualificationsParser extends DefaultHandler {
             if (q2Pos.getTime().getTime() != null) {
                 DateTimeFormatter dtfTime = new DateTimeFormatterBuilder()
                     .appendMinuteOfHour(1).appendLiteral(":")
-                    .appendSecondOfMinute(1).appendLiteral(".")
+                    .appendSecondOfMinute(2).appendLiteral(".")
                     .appendMillisOfSecond(3).toFormatter();
                 DateTimeFormatter dtfGap = new DateTimeFormatterBuilder()
                     .appendLiteral("+")

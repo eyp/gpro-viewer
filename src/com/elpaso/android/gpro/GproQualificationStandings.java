@@ -158,9 +158,18 @@ public class GproQualificationStandings extends ListActivity {
                                 // Q2 cell
                                 TextView q2NameText = (TextView) v.findViewById(R.id.q2_line_driver_name);
                                 TextView q2TimeText = (TextView) v.findViewById(R.id.q2_line_time);
+                                ImageView q2Flag = (ImageView) v.findViewById(R.id.q2_flag);
+                                ImageView q2Tyres = (ImageView) v.findViewById(R.id.q2_tyres);
                                 if (position.getQ2Position() == null) {
-                                    q2NameText.setText("--");
-                                    q2TimeText.setText("");
+                                    q2NameText.setText("----------");
+                                    q2TimeText.setText("--:--.---");
+                                    if (q2Flag != null) {
+                                        q2Flag.setVisibility(ImageView.INVISIBLE);
+                                    }
+                                    
+                                    if (q2Tyres != null) {
+                                        q2Tyres.setVisibility(ImageView.INVISIBLE);
+                                    }
                                 } else {
                                     Position q2Pos = position.getQ2Position();
                                     Log.d(TAG, "Q2 cell: " + q2Pos);
@@ -168,7 +177,6 @@ public class GproQualificationStandings extends ListActivity {
                                     q2TimeText.setText(String.format("%s", q2Pos.getTime().toString()));
                                     q2NameText.setText(String.format("%s", q2Pos.getShortedName()));
                                 
-                                    ImageView q2Flag = (ImageView) v.findViewById(R.id.q2_flag);
                                     if (q2Flag != null) { 
                                         try {
                                             q2Flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getFlagImageUrl())));
@@ -178,7 +186,6 @@ public class GproQualificationStandings extends ListActivity {
                                     }
 
                                     // Only for landscape mode
-                                    ImageView q2Tyres = (ImageView) v.findViewById(R.id.q2_tyres);
                                     if (q2Tyres != null) {
                                         try {
                                             q2Tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getTyreSupplierImageUrl())));
