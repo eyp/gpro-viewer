@@ -30,18 +30,18 @@
         android:layout_alignParentBottom="true">
         <ImageView 
             android:id="@+id/livery"
-            android:layout_height="25dp"
-            android:layout_width="75dp"
-            android:layout_marginRight="5dp"/>        
+            android:layout_height="25dip"
+            android:layout_width="75dip"
+            android:layout_marginRight="5dip"/>        
         <ImageView 
             android:id="@+id/tyres"
-            android:layout_height="20dp"
-            android:layout_width="20dp"
-            android:layout_marginRight="5dp"/>        
+            android:layout_height="20dip"
+            android:layout_width="20dip"
+            android:layout_marginRight="5dip"/>        
         <ImageView 
             android:id="@+id/flag"
-            android:layout_height="20dp"
-            android:layout_width="20dp"/>
+            android:layout_height="20dip"
+            android:layout_width="20dip"/>
     </LinearLayout>
 
     <TextView  
