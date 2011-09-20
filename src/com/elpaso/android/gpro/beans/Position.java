@@ -59,12 +59,20 @@ public class Position extends Manager {
         this.time = time;
     }
 
+    public void setTime(String time) {
+        this.time.setTime(time);
+    }
+
+    public void setGap(String gap) {
+        this.time.setGap(gap);
+    }
+
     @Override
     public String toString() {
         if (this.position != null) {
-            return String.format("%d - %s, %s (%s)", position, name, time.getTime(), time.getGap());
+            return String.format("%d - %s, %s", position, name, time.toString());
         } else {
-            return String.format("%s, %s (%s)", name, time.getTime(), time.getGap());
+            return String.format("%s, %s", name, time.toString());
         }
     }
 }

@@ -28,7 +28,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Q12Position;
-import com.elpaso.android.gpro.beans.Time;
 
 /**
  * Parser for Qualifying12StandingsXML service.<br>
@@ -233,23 +232,17 @@ public class XmlQualificationsParser extends DefaultHandler {
      * order the list by total ascending time.
      */
     private void buildGrid() {
+        DateTimeFormatter dtfTime = new DateTimeFormatterBuilder()
+            .appendMinuteOfHour(1).appendLiteral(":")
+            .appendSecondOfMinute(2).appendLiteral(".")
+            .appendMillisOfSecond(3).toFormatter();
         for (Position q1Pos : this.q1) {
             Position q2Pos = this.q2.get(this.q2.indexOf(q1Pos));
             if (q2Pos.getTime().getTime() != null) {
-                DateTimeFormatter dtfTime = new DateTimeFormatterBuilder()
-                    .appendMinuteOfHour(1).appendLiteral(":")
-                    .appendSecondOfMinute(2).appendLiteral(".")
-                    .appendMillisOfSecond(3).toFormatter();
-                DateTimeFormatter dtfGap = new DateTimeFormatterBuilder()
-                    .appendLiteral("+")
-                    .appendSecondOfMinute(1).appendLiteral(".")
-                    .appendMillisOfSecond(3).toFormatter();
                 DateTime q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
-                DateTime q1Gap = DateTime.parse(q1Pos.getTime().getGap(), dtfGap);
                 DateTime gridTime = q1Time.plus(DateTime.parse(q2Pos.getTime().getTime(), dtfTime).getMillis());
-                DateTime gridGap = q1Gap.plus(DateTime.parse(q2Pos.getTime().getGap(), dtfGap).getMillis());
                 Position gridPos = new Position(q1Pos);
-                gridPos.setTime(new Time(gridTime.toString(dtfTime), gridGap.toString(dtfGap)));
+                gridPos.setTime(gridTime.toString(dtfTime));
                 this.grid.add(gridPos);
             }
         }
@@ -261,10 +254,21 @@ public class XmlQualificationsParser extends DefaultHandler {
             }
         });
         
-        // Updates the position because positions have Q1 position number.
+        DateTimeFormatter dtfGap = new DateTimeFormatterBuilder()
+            .appendLiteral("+")
+            .appendSecondOfMinute(1).appendLiteral(".")
+            .appendMillisOfSecond(3).toFormatter();
+
+        // Updates the position because positions have Q1 position number. Also 
+        // calculates gap times.
+        Position polePosition = this.grid.get(0);
+        DateTime poleTime = DateTime.parse(polePosition.getTime().getTime(), dtfTime);
         for (int i = 0; i < this.grid.size(); i++) {
             Position pos = this.grid.get(i);
             pos.setPosition(i + 1);
+            DateTime time = DateTime.parse(pos.getTime().getTime(), dtfTime);
+            DateTime gap = time.minus(poleTime.getMillis());
+            pos.setGap(gap.toString(dtfGap));
         }
     }
 }
