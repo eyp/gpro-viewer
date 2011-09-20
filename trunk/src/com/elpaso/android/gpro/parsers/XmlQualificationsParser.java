@@ -152,7 +152,7 @@ public class XmlQualificationsParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
             // Since very long names Removes the second surname of some shorted names in order to show right the information on the screen
             String shortedName = this.currentValue; 
-            if (this.currentValue.length() >=3 && this.currentValue.substring(3).lastIndexOf(" ") > -1) {
+            if (this.currentValue.length() >= 12 && this.currentValue.substring(3).lastIndexOf(" ") > -1) {
                 shortedName = this.currentValue.substring(0, 2) + this.currentValue.substring(3, this.currentValue.substring(3).lastIndexOf(" ") + 3);
             }
             this.currentPosition.setShortedName(shortedName);
