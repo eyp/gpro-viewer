@@ -15,18 +15,21 @@
  */
 package com.elpaso.android.gpro;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
-
-import com.elpaso.android.gpro.beans.Position;
-import com.elpaso.android.gpro.exceptions.ParseException;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import com.elpaso.android.gpro.beans.Position;
+import com.elpaso.android.gpro.exceptions.ParseException;
 
 /**
  * Gpro widget.
@@ -74,11 +77,23 @@ public class GproWidgetProvider extends AppWidgetProvider {
         // Updating the text shown in the widget
         Log.d(TAG, "Updating widget info");
         String info = "";
+        String managerName = "";
         if (managerIdm != null) {
             Log.d(TAG, "Getting grid position");
             Position driver = findGridManagerPosition(context, managerIdm);
             if (driver != null) {
                 info = String.format("%02d - %s", driver.getPosition(), driver.getTime().toString());
+                managerName = driver.getShortedName();
+                Log.d(TAG, "Creating livery image");
+                try {
+                    Log.d(TAG, "Loading bitmap for livery image");
+                    Bitmap bmp = UtilHelper.loadImage(new URL(context.getString(R.string.site_url) + driver.getLiveryImageUrl()));
+                    Log.d(TAG, "Setting livery image");
+                    views.setImageViewBitmap(R.id.livery, bmp);
+                } catch (MalformedURLException e) {
+                    Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
+                }
+
             } else {
                 info = context.getString(R.string.not_qualified);
             }
@@ -87,6 +102,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
             info = context.getString(R.string.not_qualified);
         }
         views.setTextViewText(R.id.text, info);
+        views.setTextViewText(R.id.title, String.format("%s - %s", context.getString(R.string.app_name), managerName));
 
         // Updating the widget
         appWidgetManager.updateAppWidget(widgetId, views);

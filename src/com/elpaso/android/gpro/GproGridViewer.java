@@ -126,19 +126,9 @@ public class GproGridViewer extends ListActivity {
                                 Log.d(TAG, "Creating livery image");
                                 try {
                                     Log.d(TAG, "Loading bitmap for livery image");
-                                    Bitmap bmp = UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getLiveryImageUrl()));
-                                    
-                                    int w = bmp.getWidth();
-                                    int h = bmp.getHeight();
-                                    // Setting post rotate to 90
-                                    Matrix mtx = new Matrix();
-                                    mtx.postRotate(90);
-                                    // Rotating Bitmap
-                                    Log.d(TAG, "Rotating livery image");
-                                    Bitmap rotatedBMP = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
-
+                                    Bitmap bmp = UtilHelper.loadRotatedImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getLiveryImageUrl()));
                                     Log.d(TAG, "Setting livery image");
-                                    livery.setImageBitmap(rotatedBMP);
+                                    livery.setImageBitmap(bmp);
                                 } catch (MalformedURLException e) {
                                     Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
                                 }

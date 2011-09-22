@@ -142,7 +142,9 @@ public class Manager {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((idm == null) ? 0 : idm.hashCode());
+        // Before I checked idm instead of name, but something happened and some idm 
+        // weren't recovered right :S so now I check the name that it's supposed to be unique
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
         return result;
     }
 
@@ -158,11 +160,13 @@ public class Manager {
             return false;
         }
         Manager other = (Manager) obj;
-        if (idm == null) {
-            if (other.idm != null) {
+        // Before I checked idm instead of name, but something happened and some idm 
+        // weren't recovered right :S so now I check the name that it's supposed to be unique
+        if (name == null) {
+            if (other.name != null) {
                 return false;
             }
-        } else if (!idm.equals(other.idm)) {
+        } else if (!name.equals(other.name)) {
             return false;
         }
         return true;
