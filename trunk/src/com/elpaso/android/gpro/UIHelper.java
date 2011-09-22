@@ -20,8 +20,12 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.util.Log;
 
 public class UIHelper {
+    private static final String TAG = UIHelper.class.getName();
     
     /**
      * Construye un dialogo de 'progreso de acción' con estilo spinner. No se puede cancelar.
@@ -73,5 +77,23 @@ public class UIHelper {
      */
     public static String makeErrorMessage(Context context, String message) {
         return String.format("%s %s", context.getString(R.string.code), message);
+    }
+    
+    /**
+     * Rotates a bitmap N degrees.
+     * 
+     * @param bmp Source bitmap.
+     * @param degrees Degrees to rotate the original bitmap.
+     * @return A new bitmap rotated N degrees.
+     */
+    public static Bitmap rotateBitmap(Bitmap bmp, int degrees) {
+        int w = bmp.getWidth();
+        int h = bmp.getHeight();
+        // Setting post rotate to 90
+        Matrix mtx = new Matrix();
+        mtx.postRotate(90);
+        // Rotating Bitmap
+        Log.d(TAG, "Rotating image " + degrees + " degrees");
+        return Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
     }
 }

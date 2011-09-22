@@ -134,6 +134,8 @@ public class GproQualificationStandings extends ListActivity {
                                     } catch (MalformedURLException e) {
                                         Log.w(TAG, "Malformed URL for flag image: " + q1Pos.getFlagImageUrl() , e);
                                     }
+                                } else {
+                                    Log.w(TAG, "ImageView for Q1 flag not found!");
                                 }
                                 
                                 // Only for landscape mode
@@ -144,6 +146,8 @@ public class GproQualificationStandings extends ListActivity {
                                     } catch (MalformedURLException e) {
                                         Log.w(TAG, "Malformed URL for tyres image: " + q1Pos.getTyreSupplierImageUrl() , e);
                                     }
+                                } else {
+                                    Log.w(TAG, "ImageView for Q1 tyres not found!");
                                 }
                                 
                                 // Highlight manager in Q1 cell
@@ -176,6 +180,13 @@ public class GproQualificationStandings extends ListActivity {
                                     
                                     q2TimeText.setText(String.format("%s", q2Pos.getTime().toString()));
                                     q2NameText.setText(String.format("%s", q2Pos.getShortedName()));
+                                    if (q2Flag != null) {
+                                        q2Flag.setVisibility(ImageView.VISIBLE);
+                                    }
+                                    
+                                    if (q2Tyres != null) {
+                                        q2Tyres.setVisibility(ImageView.VISIBLE);
+                                    }
                                 
                                     if (q2Flag != null) { 
                                         try {
@@ -183,6 +194,8 @@ public class GproQualificationStandings extends ListActivity {
                                         } catch (MalformedURLException e) {
                                             Log.w(TAG, "Malformed URL for flag image: " + q2Pos.getFlagImageUrl() , e);
                                         }
+                                    } else {
+                                        Log.w(TAG, "ImageView for Q2 flag not found!");
                                     }
 
                                     // Only for landscape mode
@@ -192,6 +205,8 @@ public class GproQualificationStandings extends ListActivity {
                                         } catch (MalformedURLException e) {
                                             Log.w(TAG, "Malformed URL for tyres image: " + q2Pos.getTyreSupplierImageUrl() , e);
                                         }
+                                    } else {
+                                        Log.w(TAG, "ImageView for Q2 tyres not found!");
                                     }
                                     
                                     // Highlight manager in Q2 cell
