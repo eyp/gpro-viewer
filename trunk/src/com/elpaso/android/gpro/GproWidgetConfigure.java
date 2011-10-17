@@ -63,7 +63,9 @@ public class GproWidgetConfigure extends Activity {
     
     @Override
     public void onCreate(Bundle icicle) {
-        Log.d(TAG, "onCreate");
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, "onCreate");
+        }
         super.onCreate(icicle);
         // Si se pulsa el botón de back, no instalamos el widget
         setResult(RESULT_CANCELED);

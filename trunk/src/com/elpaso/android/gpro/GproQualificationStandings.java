@@ -77,7 +77,9 @@ public class GproQualificationStandings extends ListActivity {
          */
         protected List<Q12Position> doInBackground(Void... params) {
             try {
-                Log.d(TAG, "Getting qualifications information...");
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "Getting qualifications information...");
+                }
                 return GproDAO.findQualificationStandings(context);
             } catch (ParseException e) {
                 Log.w(TAG, "Error parsing qualification information from GPRO", e);
@@ -102,7 +104,6 @@ public class GproQualificationStandings extends ListActivity {
                 ArrayAdapter<Q12Position> ad = new ArrayAdapter<Q12Position>(context, R.layout.q_standings_line, drivers) {
                     @Override
                     public View getView(int row, View convertView, ViewGroup parent) {
-                        Log.d(TAG, "Drawing row " + row);
                         View v = convertView;
                         if (v == null) {
                             LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -110,14 +111,12 @@ public class GproQualificationStandings extends ListActivity {
                         }
                         Q12Position position = getItem(row);
                         if (position != null) {
-                            Log.d(TAG, "There are drivers at row " + row);
                             TextView rowNumberText = (TextView) v.findViewById(R.id.line_position);
                             if (position.getQ1Position() == null) {
                                 rowNumberText.setText("--");
                             } else {
                                 // For each row...
                                 Position q1Pos = position.getQ1Position();
-                                Log.d(TAG, "Q1 cell: " + q1Pos);
                                 // Position number
                                 rowNumberText.setText(String.format("%02d", q1Pos.getPosition()));
                                 
@@ -176,8 +175,6 @@ public class GproQualificationStandings extends ListActivity {
                                     }
                                 } else {
                                     Position q2Pos = position.getQ2Position();
-                                    Log.d(TAG, "Q2 cell: " + q2Pos);
-                                    
                                     q2TimeText.setText(String.format("%s", q2Pos.getTime().toString()));
                                     q2NameText.setText(String.format("%s", q2Pos.getShortedName()));
                                     if (q2Flag != null) {

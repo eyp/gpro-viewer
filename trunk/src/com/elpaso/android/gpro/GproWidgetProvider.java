@@ -83,7 +83,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
             Position driver = findGridManagerPosition(context, managerIdm);
             if (driver != null) {
                 info = String.format("%02d - %s", driver.getPosition(), driver.getTime().toString());
-                managerName = driver.getShortedName();
+                managerName = " - " + driver.getShortedName();
                 Log.d(TAG, "Creating livery image");
                 try {
                     Log.d(TAG, "Loading bitmap for livery image");
@@ -102,7 +102,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
             info = context.getString(R.string.not_qualified);
         }
         views.setTextViewText(R.id.text, info);
-        views.setTextViewText(R.id.title, String.format("%s - %s", context.getString(R.string.app_name), managerName));
+        views.setTextViewText(R.id.title, String.format("%s%s", context.getString(R.string.app_name), managerName));
 
         // Updating the widget
         appWidgetManager.updateAppWidget(widgetId, views);

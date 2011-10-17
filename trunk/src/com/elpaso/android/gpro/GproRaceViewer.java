@@ -70,7 +70,9 @@ public class GproRaceViewer extends Activity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                Log.d(TAG, "Getting light race information from GPRO");
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "Getting light race information from GPRO");
+                }
                 return GproDAO.getLightRaceInfo(context);
             } catch (ConfigurationException e) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
