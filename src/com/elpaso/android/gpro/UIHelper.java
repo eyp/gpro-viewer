@@ -93,7 +93,9 @@ public class UIHelper {
         Matrix mtx = new Matrix();
         mtx.postRotate(90);
         // Rotating Bitmap
-        Log.d(TAG, "Rotating image " + degrees + " degrees");
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, "Rotating image " + degrees + " degrees");
+        }
         return Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
     }
 }

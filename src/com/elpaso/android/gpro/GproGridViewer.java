@@ -24,7 +24,6 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,7 +76,9 @@ public class GproGridViewer extends ListActivity {
          */
         protected List<Position> doInBackground(Void... params) {
             try {
-                Log.d(TAG, "Getting grid information...");
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "Getting grid information...");
+                }
                 return GproDAO.findGridPositions(context);
             } catch (ParseException e) {
                 Log.w(TAG, "Error parsing grid information from GPRO", e);
@@ -109,6 +110,7 @@ public class GproGridViewer extends ListActivity {
                         }
                         Position driver = getItem(position);
                         if (driver != null) {
+                            final String SITE_URL = parent.getContext().getString(R.string.site_url);
                             TextView positionText = (TextView) v.findViewById(R.id.line_position);
                             TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
                             TextView timeText = (TextView) v.findViewById(R.id.line_time);
@@ -123,11 +125,8 @@ public class GproGridViewer extends ListActivity {
 
                             ImageView livery = (ImageView) v.findViewById(R.id.livery);
                             if (livery != null) {
-                                Log.d(TAG, "Creating livery image");
                                 try {
-                                    Log.d(TAG, "Loading bitmap for livery image");
-                                    Bitmap bmp = UtilHelper.loadRotatedImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getLiveryImageUrl()));
-                                    Log.d(TAG, "Setting livery image");
+                                    Bitmap bmp = UtilHelper.loadImage(new URL(SITE_URL + driver.getLandscapeLiveryImageUrl()));
                                     livery.setImageBitmap(bmp);
                                 } catch (MalformedURLException e) {
                                     Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
@@ -137,8 +136,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView flag = (ImageView) v.findViewById(R.id.flag);
                             if (flag != null) {
                                 try {
-                                    Log.d(TAG, "Loading bitmap for flag image");
-                                    flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getFlagImageUrl())));
+                                    flag.setImageBitmap(UtilHelper.loadImage(new URL(SITE_URL + driver.getFlagImageUrl())));
                                 } catch (MalformedURLException e) {
                                     Log.w(TAG, "Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
                                 }
@@ -148,8 +146,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView tyres = (ImageView) v.findViewById(R.id.tyres);
                             if (tyres != null) {
                                 try {
-                                    Log.d(TAG, "Loading bitmap for tyres image");
-                                    tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + driver.getTyreSupplierImageUrl())));
+                                    tyres.setImageBitmap(UtilHelper.loadImage(new URL(SITE_URL + driver.getTyreSupplierImageUrl())));
                                 } catch (MalformedURLException e) {
                                     Log.w(TAG, "Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
                                 }

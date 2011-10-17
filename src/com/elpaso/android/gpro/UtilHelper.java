@@ -56,7 +56,9 @@ public class UtilHelper {
     public static Bitmap loadImage(URL imageUrl) {
         Bitmap imageBitmap = null;
         if (images.containsKey(imageUrl.getPath())) {
-            Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            }
             return images.get(imageUrl.getPath());
         } else {
             imageBitmap = loadRemoteImage(imageUrl);
@@ -76,7 +78,9 @@ public class UtilHelper {
     public static Bitmap loadRotatedImage(URL imageUrl) {
         Bitmap rotatedBitmap = null;
         if (rotatedImages.containsKey(imageUrl.getPath())) {
-            Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            }
             return rotatedImages.get(imageUrl.getPath());
         } else {
             Bitmap imageBitmap = loadRemoteImage(imageUrl);

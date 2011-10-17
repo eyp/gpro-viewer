@@ -31,6 +31,7 @@ public class Manager {
     private Integer points = 0;
     private String tyreSupplierImageUrl;
     private String liveryImageUrl;
+    private String landscapeLiveryImageUrl;
     private String flagImageUrl;
 
     public Manager() {
@@ -47,6 +48,7 @@ public class Manager {
         this.points = source.points;
         this.tyreSupplierImageUrl = source.tyreSupplierImageUrl;
         this.liveryImageUrl = source.liveryImageUrl;
+        this.landscapeLiveryImageUrl = source.landscapeLiveryImageUrl;
         this.flagImageUrl = source.flagImageUrl;
     }
     
@@ -128,6 +130,14 @@ public class Manager {
 
     public void setLiveryImageUrl(String liveryImageUrl) {
         this.liveryImageUrl = liveryImageUrl;
+    }
+
+    public String getLandscapeLiveryImageUrl() {
+        return landscapeLiveryImageUrl;
+    }
+
+    public void setLandscapeLiveryImageUrl(String landscapeLiveryImageUrl) {
+        this.landscapeLiveryImageUrl = landscapeLiveryImageUrl;
     }
 
     public String getFlagImageUrl() {

@@ -119,8 +119,6 @@ public class XmlQualificationsParser extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         currentElement = true;
-        currentValue = "";
-
         if (qName.equalsIgnoreCase("grid") || localName.equalsIgnoreCase("grid")) {
             this.q12 = new ArrayList<Q12Position>();
             this.grid = new ArrayList<Position>();
@@ -191,6 +189,7 @@ public class XmlQualificationsParser extends DefaultHandler {
             this.currentPosition.setFlagImageUrl(this.currentValue);
         } else if (qName.equalsIgnoreCase("LIVERY_URL") || localName.equalsIgnoreCase("LIVERY_URL")) {
             this.currentPosition.setLiveryImageUrl(this.currentValue);
+            this.currentPosition.setLandscapeLiveryImageUrl(this.currentValue.replace("car.gif", "car_horiz.gif"));
         } else if (qName.equalsIgnoreCase("TYRESUPPLIER_URL") || localName.equalsIgnoreCase("TYRESUPPLIER_URL")) {
             this.currentPosition.setTyreSupplierImageUrl(this.currentValue);
         }
