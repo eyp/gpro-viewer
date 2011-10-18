@@ -37,8 +37,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetProvider extends AppWidgetProvider {
-    // Log tag
-    private static final String TAG = GproWidgetProvider.class.getName();
+    private static final String TAG = "GproWidgetProvider";
     
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] widgetIds) {
         Log.d(TAG, "onUpdate");

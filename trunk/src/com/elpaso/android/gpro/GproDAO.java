@@ -57,7 +57,7 @@ import com.elpaso.android.gpro.parsers.XmlQualificationsParser;
  * @author eduardo.yanez
  */
 public class GproDAO {
-    private static final String TAG = GproDAO.class.getName();
+    private static final String TAG = "GproDAO";
     private static final String ENCODING = "UTF-8";
     
     /**

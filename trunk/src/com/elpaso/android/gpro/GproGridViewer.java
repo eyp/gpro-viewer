@@ -43,7 +43,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproGridViewer extends ListActivity {
-    private static final String TAG = GproGridViewer.class.getName();
+    private static final String TAG = "GproGridViewer";
     
 	/** 
 	 * Called on activity creation. 

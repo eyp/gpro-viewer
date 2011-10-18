@@ -43,7 +43,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetConfigure extends Activity {
-    static final String TAG = GproWidgetConfigure.class.getName();
+    private static final String TAG = "GproWidgetConfigure";
 
     private static final String PREFS_NAME = "com.elpaso.android.gpro.GproWidgetProvider";
     private static final String PREF_PREFIX_KEY = "gpro_";
