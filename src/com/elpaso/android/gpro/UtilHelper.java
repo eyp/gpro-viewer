@@ -27,7 +27,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class UtilHelper {
-    private static final String TAG = UtilHelper.class.getName();
+    private static final String TAG = "UtilHelper";
     
     private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
     private static Map<String, Bitmap> rotatedImages = new HashMap<String, Bitmap>();

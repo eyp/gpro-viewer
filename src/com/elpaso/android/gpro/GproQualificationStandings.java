@@ -43,7 +43,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproQualificationStandings extends ListActivity {
-    private static final String TAG = GproQualificationStandings.class.getName();
+    private static final String TAG = "GproQualificationStandings";
     
 	/** 
 	 * Called on activity creation. 

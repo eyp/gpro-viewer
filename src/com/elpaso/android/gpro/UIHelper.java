@@ -25,7 +25,7 @@ import android.graphics.Matrix;
 import android.util.Log;
 
 public class UIHelper {
-    private static final String TAG = UIHelper.class.getName();
+    private static final String TAG = "UIHelper";
     
     /**
      * Construye un dialogo de 'progreso de acción' con estilo spinner. No se puede cancelar.

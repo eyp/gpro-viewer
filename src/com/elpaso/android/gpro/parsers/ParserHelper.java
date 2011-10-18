@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
 import android.util.Log;
 
 public class ParserHelper {
-    private static final String TAG = ParserHelper.class.getName();
+    private static final String TAG = "ParserHelper";
     private static final int KB_SIZE = 1024;
 
     /**
