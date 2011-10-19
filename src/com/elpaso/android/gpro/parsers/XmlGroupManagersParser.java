@@ -40,7 +40,7 @@ import com.elpaso.android.gpro.beans.Manager;
  */
 public class XmlGroupManagersParser extends DefaultHandler {
     private Boolean currentElement = false;
-    private String currentValue = null;
+    private String currentValue = "";
     private Manager currentManager = null;
     private List<Manager> managers;
 
@@ -57,6 +57,7 @@ public class XmlGroupManagersParser extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         currentElement = true;
+        currentValue = "";
         if (localName.equalsIgnoreCase("group")) {
             this.managers = new ArrayList<Manager>();
         } else if (localName.equalsIgnoreCase("manager")) {

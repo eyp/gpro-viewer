@@ -26,6 +26,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
+
 import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Q12Position;
 
@@ -70,6 +72,7 @@ import com.elpaso.android.gpro.beans.Q12Position;
  * @author eduardo.yanez
  */
 public class XmlQualificationsParser extends DefaultHandler {
+    private static final String TAG = "XmlQualificationsParser";
     
     private List<Position> q1;
     private List<Position> q2;
@@ -119,6 +122,7 @@ public class XmlQualificationsParser extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         currentElement = true;
+        currentValue = "";
         if (qName.equalsIgnoreCase("grid") || localName.equalsIgnoreCase("grid")) {
             this.q12 = new ArrayList<Q12Position>();
             this.grid = new ArrayList<Position>();
