@@ -15,13 +15,15 @@
  */
 package com.elpaso.android.gpro;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -36,7 +38,7 @@ import com.elpaso.android.gpro.exceptions.ConfigurationException;
  * @author eduardo.yanez
  */
 public class GproRaceViewer extends Activity {
-    private static final String TAG = "GproRaceViewer";
+    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
     
 	/** 
 	 * Called when this activity is created. 
@@ -70,8 +72,8 @@ public class GproRaceViewer extends Activity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Getting light race information from GPRO");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Getting light race information from GPRO");
                 }
                 return GproDAO.getLightRaceInfo(context);
             } catch (ConfigurationException e) {
@@ -82,7 +84,7 @@ public class GproRaceViewer extends Activity {
                   public void onClick(DialogInterface dialog, int which) {
                     return;
                 } });
-                Log.w(TAG, "Error reading light race information from GPRO", e);
+                logger.warn("Error reading light race information from GPRO", e);
                 return null;
             }
         }

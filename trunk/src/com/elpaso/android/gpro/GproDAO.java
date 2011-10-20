@@ -35,11 +35,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.elpaso.android.gpro.beans.Manager;
 import com.elpaso.android.gpro.beans.Position;
@@ -57,7 +58,7 @@ import com.elpaso.android.gpro.parsers.XmlQualificationsParser;
  * @author eduardo.yanez
  */
 public class GproDAO {
-    private static final String TAG = "GproDAO";
+    private static final Logger logger = LoggerFactory.getLogger(GproDAO.class);
     private static final String ENCODING = "UTF-8";
     
     /**
@@ -137,8 +138,8 @@ public class GproDAO {
     private static XmlQualificationsParser parseQualificationsPage(Context context) throws ParseException {
         XmlQualificationsParser parser = null;
         try {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Parsing XML response for qualifications standings");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing XML response for qualifications standings");
             }
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
@@ -148,8 +149,8 @@ public class GproDAO {
             if (group == null) {
                 return null;
             }
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Group ID: " + group);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Group ID: {}", group);
             }
             URL sourceUrl = new URL(getQualificationsPage(group, context));
 
@@ -157,7 +158,7 @@ public class GproDAO {
             xr.setContentHandler(parser);
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing XML qualifications service response", e);
+            logger.error("Error parsing XML qualifications service response", e);
             throw new ParseException("Error parsing XML qualifications service response");
         }
         return parser;
@@ -171,16 +172,16 @@ public class GproDAO {
     public static List<Manager> findGroupMembers(Context context) throws ParseException {
         List<Manager> managers = null;
         try {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Parsing XML response for group members");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing XML response for group members");
             }
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
             String group = GproWidgetConfigure.loadGroupId(context);
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Group ID: " + group);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Group ID: {}", group);
             }
             URL sourceUrl = new URL(getGroupMembersPage(group, context));
 
@@ -188,11 +189,11 @@ public class GproDAO {
             xr.setContentHandler(parser);
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, managers.size() + " managers in group " + group);
+            if (logger.isDebugEnabled()) {
+                logger.debug("{} managers in group {}", managers.size(), group);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing XML group members service response", e);
+            logger.error("Error parsing XML group members service response", e);
             throw new ParseException("Error parsing XML group members service response");
         }
         return managers;
@@ -208,26 +209,26 @@ public class GproDAO {
     public static List<Manager> findGroupMembers(Context context, String groupType, String groupNumber) throws ParseException {
         List<Manager> managers = null;
         try {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Parsing XML response for group members");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Parsing XML response for group members");
             }
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
             String group = String.format("%s - %s", groupType, groupNumber);
-            Log.d(TAG, "Group ID: " + group);
+            logger.debug("Group ID: {}", group);
             URL sourceUrl = new URL(getGroupMembersPage(group, context));
 
             XmlGroupManagersParser parser = new XmlGroupManagersParser();
             xr.setContentHandler(parser);
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, managers.size() + " managers in group " + group);
+            if (logger.isDebugEnabled()) {
+                logger.debug("{} managers in group {}", managers.size(), group);
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing XML group members service response", e);
+            logger.error("Error parsing XML group members service response", e);
             throw new ParseException("Error parsing XML group members service response");
         }
         return managers;
@@ -251,7 +252,7 @@ public class GproDAO {
             }
             racePage = getData(request);
         } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Error parsing light race page", e);
+            logger.error("Error parsing light race page", e);
         }
         return racePage;
     }
@@ -265,7 +266,7 @@ public class GproDAO {
                 request = context.getString(R.string.service_qualifications_page) + URLEncoder.encode(group, ENCODING);
             }
         } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Error reading qualifications page", e);
+            logger.error("Error reading qualifications page", e);
         }
         return request;
     }
@@ -279,7 +280,7 @@ public class GproDAO {
                 request = context.getString(R.string.service_group_members_page) + URLEncoder.encode(group, ENCODING);
             }
         } catch (UnsupportedEncodingException e) {
-            Log.e(TAG, "Error reading group members page", e);
+            logger.error("Error reading group members page", e);
         }
         return request;
     }
@@ -307,13 +308,13 @@ public class GproDAO {
             }
             pageContent = content.toString();
         } catch (MalformedURLException e) {
-            Log.e(TAG, "Malformed URL [" + url + "]", e);
+            logger.error("Malformed URL [" + url + "]", e);
         } catch (ClientProtocolException e) {
-            Log.e(TAG, "Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [" + url + "] content", e);
         } catch (URISyntaxException e) {
-            Log.e(TAG, "Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [" + url + "] content", e);
         } catch (IOException e) {
-            Log.e(TAG, "Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [" + url + "] content", e);
         }
         return pageContent;
     }

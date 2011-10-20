@@ -15,6 +15,9 @@
  */
 package com.elpaso.android.gpro;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -22,11 +25,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.util.Log;
 
 public class UIHelper {
-    private static final String TAG = "UIHelper";
-    
+    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
+
     /**
      * Construye un dialogo de 'progreso de acción' con estilo spinner. No se puede cancelar.
      * 
@@ -93,8 +95,8 @@ public class UIHelper {
         Matrix mtx = new Matrix();
         mtx.postRotate(90);
         // Rotating Bitmap
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, "Rotating image " + degrees + " degrees");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Rotating image {} degrees", degrees);
         }
         return Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
     }

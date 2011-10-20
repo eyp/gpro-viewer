@@ -19,13 +19,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproQualificationStandings extends ListActivity {
-    private static final String TAG = "GproQualificationStandings";
+    private static final Logger logger = LoggerFactory.getLogger(GproQualificationStandings.class);
     
 	/** 
 	 * Called on activity creation. 
@@ -77,12 +79,12 @@ public class GproQualificationStandings extends ListActivity {
          */
         protected List<Q12Position> doInBackground(Void... params) {
             try {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Getting qualifications information...");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Getting qualifications information...");
                 }
                 return GproDAO.findQualificationStandings(context);
             } catch (ParseException e) {
-                Log.w(TAG, "Error parsing qualification information from GPRO", e);
+                logger.warn("Error parsing qualification information from GPRO", e);
                 return null;
             }
         }
@@ -131,10 +133,10 @@ public class GproQualificationStandings extends ListActivity {
                                     try {
                                         q1Flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q1Pos.getFlagImageUrl())));
                                     } catch (MalformedURLException e) {
-                                        Log.w(TAG, "Malformed URL for flag image: " + q1Pos.getFlagImageUrl() , e);
+                                        logger.warn("Malformed URL for flag image: " + q1Pos.getFlagImageUrl() , e);
                                     }
                                 } else {
-                                    Log.w(TAG, "ImageView for Q1 flag not found!");
+                                    logger.warn("ImageView for Q1 flag not found!");
                                 }
                                 
                                 // Only for landscape mode
@@ -143,10 +145,10 @@ public class GproQualificationStandings extends ListActivity {
                                     try {
                                         q1Tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q1Pos.getTyreSupplierImageUrl())));
                                     } catch (MalformedURLException e) {
-                                        Log.w(TAG, "Malformed URL for tyres image: " + q1Pos.getTyreSupplierImageUrl() , e);
+                                        logger.warn("Malformed URL for tyres image: " + q1Pos.getTyreSupplierImageUrl() , e);
                                     }
                                 } else {
-                                    Log.w(TAG, "ImageView for Q1 tyres not found!");
+                                    logger.warn("ImageView for Q1 tyres not found!");
                                 }
                                 
                                 // Highlight manager in Q1 cell
@@ -189,10 +191,10 @@ public class GproQualificationStandings extends ListActivity {
                                         try {
                                             q2Flag.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getFlagImageUrl())));
                                         } catch (MalformedURLException e) {
-                                            Log.w(TAG, "Malformed URL for flag image: " + q2Pos.getFlagImageUrl() , e);
+                                            logger.warn("Malformed URL for flag image: " + q2Pos.getFlagImageUrl() , e);
                                         }
                                     } else {
-                                        Log.w(TAG, "ImageView for Q2 flag not found!");
+                                        logger.warn("ImageView for Q2 flag not found!");
                                     }
 
                                     // Only for landscape mode
@@ -200,10 +202,10 @@ public class GproQualificationStandings extends ListActivity {
                                         try {
                                             q2Tyres.setImageBitmap(UtilHelper.loadImage(new URL(parent.getContext().getString(R.string.site_url) + q2Pos.getTyreSupplierImageUrl())));
                                         } catch (MalformedURLException e) {
-                                            Log.w(TAG, "Malformed URL for tyres image: " + q2Pos.getTyreSupplierImageUrl() , e);
+                                            logger.warn("Malformed URL for tyres image: " + q2Pos.getTyreSupplierImageUrl() , e);
                                         }
                                     } else {
-                                        Log.w(TAG, "ImageView for Q2 tyres not found!");
+                                        logger.warn("ImageView for Q2 tyres not found!");
                                     }
                                     
                                     // Highlight manager in Q2 cell

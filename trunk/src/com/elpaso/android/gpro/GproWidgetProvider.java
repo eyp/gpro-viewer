@@ -19,13 +19,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.elpaso.android.gpro.beans.Position;
@@ -37,10 +39,12 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetProvider extends AppWidgetProvider {
-    private static final String TAG = "GproWidgetProvider";
+    private static final Logger logger = LoggerFactory.getLogger(GproWidgetProvider.class);
     
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] widgetIds) {
-        Log.d(TAG, "onUpdate");
+        if (logger.isDebugEnabled()) {
+            logger.debug("onUpdate");
+        }
         final int N = widgetIds.length;
 
         // For each widget...
@@ -49,7 +53,7 @@ public class GproWidgetProvider extends AppWidgetProvider {
             try {
                 setUpWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerIdm(context));
             } catch (ParseException e) {
-                Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
+                logger.error("Error happened getting information from GPRO", e);
             }
         }
     }
@@ -59,7 +63,9 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * Gets the qualification information, and shows the manager's position in the grid and the offset time related to the pole position.
      */
     static void setUpWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Integer managerIdm) throws ParseException {
-        Log.d(TAG, "Setting up GproWidget [" + widgetId + "]");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Setting up GproWidget [{}]", widgetId);
+        }
         // Getting widget's views
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
 
@@ -70,34 +76,46 @@ public class GproWidgetProvider extends AppWidgetProvider {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Linking the intent's call to the button's onclick event
-        Log.d(TAG, "Configuring grid button");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Configuring grid button");
+        }
         views.setOnClickPendingIntent(R.id.grid_button, pendingIntent);
         
         // Updating the text shown in the widget
-        Log.d(TAG, "Updating widget info");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Updating widget info");
+        }
         String info = "";
         String managerName = "";
         if (managerIdm != null) {
-            Log.d(TAG, "Getting grid position");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Getting grid position");
+            }
             Position driver = findGridManagerPosition(context, managerIdm);
             if (driver != null) {
                 info = String.format("%02d - %s", driver.getPosition(), driver.getTime().toString());
                 managerName = " - " + driver.getShortedName();
-                Log.d(TAG, "Creating livery image");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Creating livery image");
+                }
                 try {
-                    Log.d(TAG, "Loading bitmap for livery image");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Loading bitmap for livery image");
+                    }
                     Bitmap bmp = UtilHelper.loadImage(new URL(context.getString(R.string.site_url) + driver.getLiveryImageUrl()));
-                    Log.d(TAG, "Setting livery image");
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Setting livery image");
+                    }
                     views.setImageViewBitmap(R.id.livery, bmp);
                 } catch (MalformedURLException e) {
-                    Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
+                    logger.debug("Malformed URL for livery image " + driver.getLiveryImageUrl() , e);
                 }
 
             } else {
                 info = context.getString(R.string.not_qualified);
             }
         } else {
-            Log.w(TAG, "There isn't a manager IDM configured");
+            logger.debug("There isn't a manager IDM configured");
             info = context.getString(R.string.not_qualified);
         }
         views.setTextViewText(R.id.text, info);
@@ -105,7 +123,9 @@ public class GproWidgetProvider extends AppWidgetProvider {
 
         // Updating the widget
         appWidgetManager.updateAppWidget(widgetId, views);
-        Log.d(TAG, "Set up finished");
+        if (logger.isDebugEnabled()) {
+            logger.debug("Set up finished");
+        }
     }
 
     /**

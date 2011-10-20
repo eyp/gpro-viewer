@@ -20,10 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParserHelper {
-    private static final String TAG = "ParserHelper";
+    private static final Logger logger = LoggerFactory.getLogger(ParserHelper.class);
     private static final int KB_SIZE = 1024;
 
     /**
@@ -108,14 +109,14 @@ public class ParserHelper {
             }
             return content.toString();
         } catch (IOException e) {
-            Log.e(TAG, "Can't open input stream: " +  e.getLocalizedMessage());
+            logger.error("Can't open input stream", e);
             throw e;
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "Can't close input stream: " + e.getLocalizedMessage());
+                    logger.error("Can't close input stream", e);
                 }
             }
         }

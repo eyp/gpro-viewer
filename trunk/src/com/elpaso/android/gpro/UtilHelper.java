@@ -19,15 +19,17 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 
 public class UtilHelper {
-    private static final String TAG = "UtilHelper";
+    private static final Logger logger = LoggerFactory.getLogger(UtilHelper.class);
     
     private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
     private static Map<String, Bitmap> rotatedImages = new HashMap<String, Bitmap>();
@@ -56,8 +58,8 @@ public class UtilHelper {
     public static Bitmap loadImage(URL imageUrl) {
         Bitmap imageBitmap = null;
         if (images.containsKey(imageUrl.getPath())) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Image {} found in cache", imageUrl.getPath());
             }
             return images.get(imageUrl.getPath());
         } else {
@@ -78,8 +80,8 @@ public class UtilHelper {
     public static Bitmap loadRotatedImage(URL imageUrl) {
         Bitmap rotatedBitmap = null;
         if (rotatedImages.containsKey(imageUrl.getPath())) {
-            if (Log.isLoggable(TAG, Log.DEBUG)) {
-                Log.d(TAG, "Image " + imageUrl.getPath() + " found in cache");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Image {} found in cache", imageUrl.getPath());
             }
             return rotatedImages.get(imageUrl.getPath());
         } else {
@@ -107,16 +109,15 @@ public class UtilHelper {
             is = conn.getInputStream();
             imageBitmap = BitmapFactory.decodeStream(is);
         } catch (IOException e) {
-            Log.e(TAG, "Error reading image from " + imageUrl.getPath(), e);
+            logger.error("Error reading image from " + imageUrl.getPath(), e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Log.e(TAG, "Error closing the InputStream used for reading the image from " + imageUrl.getPath(), e);
+                    logger.error("Error closing the InputStream used for reading the image from " + imageUrl.getPath(), e);
                 }
             }
-            
             if (conn != null) {
                 conn.disconnect();
             }
