@@ -18,6 +18,9 @@ package com.elpaso.android.gpro;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -27,7 +30,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -43,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetConfigure extends Activity {
-    private static final String TAG = "GproWidgetConfigure";
+    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
 
     private static final String PREFS_NAME = "com.elpaso.android.gpro.GproWidgetProvider";
     private static final String PREF_PREFIX_KEY = "gpro_";
@@ -63,8 +65,8 @@ public class GproWidgetConfigure extends Activity {
     
     @Override
     public void onCreate(Bundle icicle) {
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
-            Log.d(TAG, "onCreate");
+        if (logger.isDebugEnabled()) {
+            logger.debug("onCreate");
         }
         super.onCreate(icicle);
         // Si se pulsa el botón de back, no instalamos el widget
@@ -99,7 +101,7 @@ public class GproWidgetConfigure extends Activity {
 
         // Si el identificador no es válido, terminamos.
         if (this.mAppWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-            Log.e(TAG, "Widget identifier invalid, finishing application");
+            logger.error("Widget identifier invalid, finishing application");
             finish();
         }
     }
@@ -166,7 +168,7 @@ public class GproWidgetConfigure extends Activity {
             try {
                 GproWidgetProvider.setUpWidget(context, appWidgetManager, mAppWidgetId, loadManagerIdm(context));
             } catch (ParseException e) {
-                Log.e(TAG, "Error happened getting information from GPRO: " + e.getLocalizedMessage());
+                logger.error("Error happened getting information from GPRO", e);
             }
 
             // Devolvemos el control al widget que nos llamó

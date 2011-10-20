@@ -19,6 +19,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -26,7 +29,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproGridViewer extends ListActivity {
-    private static final String TAG = "GproGridViewer";
+    private static final Logger logger = LoggerFactory.getLogger(GproQualificationStandings.class);
     
 	/** 
 	 * Called on activity creation. 
@@ -76,12 +78,12 @@ public class GproGridViewer extends ListActivity {
          */
         protected List<Position> doInBackground(Void... params) {
             try {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "Getting grid information...");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Getting grid information...");
                 }
                 return GproDAO.findGridPositions(context);
             } catch (ParseException e) {
-                Log.w(TAG, "Error parsing grid information from GPRO", e);
+                logger.warn("Error parsing grid information from GPRO", e);
                 return null;
             }
         }
@@ -129,7 +131,7 @@ public class GproGridViewer extends ListActivity {
                                     Bitmap bmp = UtilHelper.loadImage(new URL(SITE_URL + driver.getLandscapeLiveryImageUrl()));
                                     livery.setImageBitmap(bmp);
                                 } catch (MalformedURLException e) {
-                                    Log.w(TAG, "Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
+                                    logger.warn("Malformed URL for livery image: " + driver.getLiveryImageUrl() , e);
                                 }
                             }
                             
@@ -138,7 +140,7 @@ public class GproGridViewer extends ListActivity {
                                 try {
                                     flag.setImageBitmap(UtilHelper.loadImage(new URL(SITE_URL + driver.getFlagImageUrl())));
                                 } catch (MalformedURLException e) {
-                                    Log.w(TAG, "Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
+                                    logger.warn("Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
                                 }
                             }
                             
@@ -148,7 +150,7 @@ public class GproGridViewer extends ListActivity {
                                 try {
                                     tyres.setImageBitmap(UtilHelper.loadImage(new URL(SITE_URL + driver.getTyreSupplierImageUrl())));
                                 } catch (MalformedURLException e) {
-                                    Log.w(TAG, "Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
+                                    logger.warn("Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
                                 }
                             }
                             
