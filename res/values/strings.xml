@@ -53,18 +53,6 @@
         <item>Elite</item>
     </string-array>
         
-    <string-array name="update_intervals">
-        <item>30 min</item>
-        <item>1 hour</item>
-        <item>Once a day</item>
-    </string-array>
-        
-    <!-- Valores por defecto -->
-    <string name="default_manager_name"></string>
-    <string name="default_group_type">Elite</string>
-    <string name="default_group_number"></string>
-    <string name="default_update_interval">1800000</string>
-    
     <!-- Mensajes -->
     <string name="error">Error</string>
     <string name="error_100">100 - There was an error getting information from GPRO</string>

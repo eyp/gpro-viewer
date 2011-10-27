@@ -15,8 +15,8 @@
  */
 package com.elpaso.android.gpro;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -102,15 +102,16 @@ public class GproWidgetProvider extends AppWidgetProvider {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Loading bitmap for livery image");
                     }
-                    Bitmap bmp = UtilHelper.loadImage(new URL(context.getString(R.string.site_url) + driver.getLiveryImageUrl()));
+                    Bitmap bmp = NetHelper.loadImage(context.getString(R.string.site_url), driver.getLiveryImageUrl());
                     if (logger.isDebugEnabled()) {
                         logger.debug("Setting livery image");
                     }
                     views.setImageViewBitmap(R.id.livery, bmp);
                 } catch (MalformedURLException e) {
                     logger.debug("Malformed URL for livery image " + driver.getLiveryImageUrl() , e);
+                } catch (IOException e) {
+                    logger.warn("Can't load livery image: " + driver.getLiveryImageUrl() , e);
                 }
-
             } else {
                 info = context.getString(R.string.not_qualified);
             }

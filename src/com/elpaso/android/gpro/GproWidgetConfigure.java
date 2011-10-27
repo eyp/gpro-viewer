@@ -53,10 +53,7 @@ public class GproWidgetConfigure extends Activity {
     private static final String PREF_MANAGER_NAME_KEY = "manager_name_";
     private static final String PREF_GROUP_TYPE_KEY = "group_type_";
     private static final String PREF_GROUP_NUMBER_KEY = "group_number_";
-    private static final int DIALOG_ALERT_NAME_ID = 1;
-    private static final int DIALOG_ALERT_GROUP_NUMBER_ID = 2;
-    private static final int DIALOG_ALERT_GROUP_NUMBER_ERROR_ID = 3;
-    private static final int DIALOG_ALERT_GROUP_TYPE_ERROR_ID = 4;
+    private static final int ALERT_DIALOG_SD_ERROR = 1;
 
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private Spinner managers;
@@ -106,6 +103,19 @@ public class GproWidgetConfigure extends Activity {
         }
     }
 
+    protected Dialog onCreateDialog(int id) {
+        Dialog dialog;
+        switch(id) {
+        case ALERT_DIALOG_SD_ERROR:
+            // do the work to define the pause Dialog
+            dialog = UIHelper.makeAlertDialog(this, this.getString(R.string.error), "La SD no está disopnible");
+            break;
+        default:
+            dialog = null;
+        }
+        return dialog;
+    }
+    
     private List<CharSequence> getGroupNumbers(String groupType) {
         List<CharSequence> numbers = new ArrayList<CharSequence>();
         int limit = 0;
@@ -132,33 +142,13 @@ public class GproWidgetConfigure extends Activity {
             final Context context = GproWidgetConfigure.this;
 
             // Salvamos todas las preferencias del usuario 
-            if (managers.getSelectedItem() == null) {
-                showDialog(DIALOG_ALERT_NAME_ID);
-                return;
-            }
             Manager manager = (Manager) managers.getSelectedItem();
             saveManagerIdm(context, manager.getIdm());
 
-            if (groupTypes.getSelectedItem() == null) {
-                showDialog(DIALOG_ALERT_GROUP_TYPE_ERROR_ID);
-                return;
-            }
-            
             String groupType = groupTypes.getSelectedItem().toString();
             String groupNumber = "";
             if (!groupType.equals(context.getString(R.string.elite))) {
                 groupNumber = groupNumbers.getSelectedItem().toString();
-                if (groupNumber.equals("")) {
-                    showDialog(DIALOG_ALERT_GROUP_NUMBER_ID);
-                    return;
-                }
-                
-                try {
-                    Integer.parseInt(groupNumber);
-                } catch (NumberFormatException e) {
-                    showDialog(DIALOG_ALERT_GROUP_NUMBER_ERROR_ID);
-                    return;
-                } 
             }
             saveGroupType(context, groupType);
             saveGroupNumber(context, groupNumber);
