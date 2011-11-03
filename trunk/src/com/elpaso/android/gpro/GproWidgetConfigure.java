@@ -120,7 +120,7 @@ public class GproWidgetConfigure extends Activity {
         List<CharSequence> numbers = new ArrayList<CharSequence>();
         int limit = 0;
         if (groupType.equals(this.getString(R.string.rookie))) {
-            limit = 256;
+            limit = 288;
         } else if (groupType.equals(this.getString(R.string.amateur))) {
             limit = 64;
         } else if (groupType.equals(this.getString(R.string.pro))) {
