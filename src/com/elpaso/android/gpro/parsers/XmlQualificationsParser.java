@@ -188,8 +188,11 @@ public class XmlQualificationsParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("flag_url") || localName.equalsIgnoreCase("flag_url")) {
             this.currentPosition.setFlagImageUrl(this.currentValue);
         } else if (qName.equalsIgnoreCase("LIVERY_URL") || localName.equalsIgnoreCase("LIVERY_URL")) {
-            this.currentPosition.setLiveryImageUrl(this.currentValue);
-            this.currentPosition.setLandscapeLiveryImageUrl(this.currentValue.replace("car.gif", "car_horiz.gif"));
+            // Remove /images from the value
+            int index = this.currentValue.indexOf("/images") + "/images".length();
+            String url = this.currentValue.substring(index);
+            this.currentPosition.setLiveryImageUrl(url);
+            this.currentPosition.setLandscapeLiveryImageUrl(url.replace("car.gif", "car_horiz.gif"));
         } else if (qName.equalsIgnoreCase("TYRESUPPLIER_URL") || localName.equalsIgnoreCase("TYRESUPPLIER_URL")) {
             this.currentPosition.setTyreSupplierImageUrl(this.currentValue);
         }
@@ -232,16 +235,29 @@ public class XmlQualificationsParser extends DefaultHandler {
      */
     private void buildGrid() {
         DateTimeFormatter dtfTime = new DateTimeFormatterBuilder()
-            .appendMinuteOfHour(1).appendLiteral(":")
-            .appendSecondOfMinute(2).appendLiteral(".")
-            .appendMillisOfSecond(3).toFormatter();
+        .appendMinuteOfHour(1).appendLiteral(":")
+        .appendSecondOfMinute(2).appendLiteral(".")
+        .appendMillisOfSecond(3).toFormatter();
+        DateTimeFormatter dtfTotalTime = new DateTimeFormatterBuilder()
+        .appendMinuteOfHour(1).appendLiteral(":")
+        .appendSecondOfMinute(2).appendLiteral(".")
+        .appendMillisOfSecond(3).toFormatter();
         for (Position q1Pos : this.q1) {
             Position q2Pos = this.q2.get(this.q2.indexOf(q1Pos));
             if (q2Pos.getTime().getTime() != null) {
-                DateTime q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                DateTime q1Time = null;
+                try {
+                    q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                } catch (IllegalArgumentException e) {
+                    // El tiempo viene sin minutos, probamos con otro formateador
+                    dtfTime = new DateTimeFormatterBuilder()
+                        .appendSecondOfMinute(2).appendLiteral(".")
+                        .appendMillisOfSecond(3).toFormatter();
+                    q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                }
                 DateTime gridTime = q1Time.plus(DateTime.parse(q2Pos.getTime().getTime(), dtfTime).getMillis());
                 Position gridPos = new Position(q1Pos);
-                gridPos.setTime(gridTime.toString(dtfTime));
+                gridPos.setTime(gridTime.toString(dtfTotalTime));
                 this.grid.add(gridPos);
             }
         }
@@ -261,11 +277,11 @@ public class XmlQualificationsParser extends DefaultHandler {
         // Updates the position because positions have Q1 position number. Also 
         // calculates gap times.
         Position polePosition = this.grid.get(0);
-        DateTime poleTime = DateTime.parse(polePosition.getTime().getTime(), dtfTime);
+        DateTime poleTime = DateTime.parse(polePosition.getTime().getTime(), dtfTotalTime);
         for (int i = 0; i < this.grid.size(); i++) {
             Position pos = this.grid.get(i);
             pos.setPosition(i + 1);
-            DateTime time = DateTime.parse(pos.getTime().getTime(), dtfTime);
+            DateTime time = DateTime.parse(pos.getTime().getTime(), dtfTotalTime);
             DateTime gap = time.minus(poleTime.getMillis());
             pos.setGap(gap.toString(dtfGap));
         }

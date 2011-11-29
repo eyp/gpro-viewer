@@ -113,6 +113,7 @@ public class GproGridViewer extends ListActivity {
                         Position driver = getItem(position);
                         if (driver != null) {
                             final String SITE_URL = parent.getContext().getString(R.string.site_url);
+                            final String LIVERIES_URL = parent.getContext().getString(R.string.liveries_url);
                             TextView positionText = (TextView) v.findViewById(R.id.line_position);
                             TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
                             TextView timeText = (TextView) v.findViewById(R.id.line_time);
@@ -128,7 +129,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView livery = (ImageView) v.findViewById(R.id.livery);
                             if (livery != null) {
                                 try {
-                                    Bitmap bmp = NetHelper.loadImage(SITE_URL, driver.getLandscapeLiveryImageUrl());
+                                    Bitmap bmp = NetHelper.loadImage(LIVERIES_URL, driver.getLandscapeLiveryImageUrl());
                                     livery.setImageBitmap(bmp);
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for livery image: " + driver.getLandscapeLiveryImageUrl() , e);

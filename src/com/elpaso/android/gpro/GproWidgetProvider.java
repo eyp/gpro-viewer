@@ -102,7 +102,8 @@ public class GproWidgetProvider extends AppWidgetProvider {
                     if (logger.isDebugEnabled()) {
                         logger.debug("Loading bitmap for livery image");
                     }
-                    Bitmap bmp = NetHelper.loadImage(context.getString(R.string.site_url), driver.getLiveryImageUrl());
+                    final String LIVERIES_URL = context.getString(R.string.liveries_url);
+                    Bitmap bmp = NetHelper.loadImage(LIVERIES_URL, driver.getLiveryImageUrl());
                     if (logger.isDebugEnabled()) {
                         logger.debug("Setting livery image");
                     }
