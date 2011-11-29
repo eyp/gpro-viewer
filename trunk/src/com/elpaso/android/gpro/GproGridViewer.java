@@ -112,7 +112,8 @@ public class GproGridViewer extends ListActivity {
                         }
                         Position driver = getItem(position);
                         if (driver != null) {
-                            final String SITE_URL = parent.getContext().getString(R.string.site_url);
+                            final String FLAGS_URL = parent.getContext().getString(R.string.flags_url);
+                            final String SUPPLIERS_URL = parent.getContext().getString(R.string.suppliers_url);
                             final String LIVERIES_URL = parent.getContext().getString(R.string.liveries_url);
                             TextView positionText = (TextView) v.findViewById(R.id.line_position);
                             TextView nameText = (TextView) v.findViewById(R.id.line_driver_name);
@@ -141,7 +142,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView flag = (ImageView) v.findViewById(R.id.flag);
                             if (flag != null) {
                                 try {
-                                    flag.setImageBitmap(NetHelper.loadImage(SITE_URL, driver.getFlagImageUrl()));
+                                    flag.setImageBitmap(NetHelper.loadImage(FLAGS_URL, driver.getFlagImageUrl()));
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
                                 } catch (IOException e) {
@@ -153,7 +154,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView tyres = (ImageView) v.findViewById(R.id.tyres);
                             if (tyres != null) {
                                 try {
-                                    tyres.setImageBitmap(NetHelper.loadImage(SITE_URL, driver.getTyreSupplierImageUrl()));
+                                    tyres.setImageBitmap(NetHelper.loadImage(SUPPLIERS_URL, driver.getTyreSupplierImageUrl()));
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
                                 } catch (IOException e) {

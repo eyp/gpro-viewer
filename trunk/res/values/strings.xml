@@ -6,6 +6,8 @@
     <!-- Producción -->
     <string name="site_url">http://www.gpro.net/en</string>
     <string name="liveries_url">http://gpro.s3.amazonaws.com/images/liveries</string>
+    <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>
+    <string name="suppliers_url">http://didlsjm328074.cloudfront.net/compressed</string>
     <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
     <string name="test_race_light_page">http://192.168.6.20:80/gpro/race_light.html?Group=</string>
     
