@@ -71,8 +71,17 @@ public class GproWidgetProvider extends AppWidgetProvider {
 
         // Making an intent to launch the main activity 
         //Intent intent = new Intent(context, GproGridViewer.class);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Configuring grid button 1");
+        }
         Intent intent = new Intent(context, GproViewer.class);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Configuring grid button 2");
+        }
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Configuring grid button 3");
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Linking the intent's call to the button's onclick event
