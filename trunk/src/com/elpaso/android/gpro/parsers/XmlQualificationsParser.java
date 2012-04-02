@@ -28,7 +28,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.elpaso.android.gpro.GproQualificationStandings;
 import com.elpaso.android.gpro.beans.Position;
 import com.elpaso.android.gpro.beans.Q12Position;
 
@@ -250,22 +249,25 @@ public class XmlQualificationsParser extends DefaultHandler {
         .appendSecondOfMinute(2).appendLiteral(".")
         .appendMillisOfSecond(3).toFormatter();
         for (Position q1Pos : this.q1) {
-            Position q2Pos = this.q2.get(this.q2.indexOf(q1Pos));
-            if (q2Pos.getTime().getTime() != null) {
-                DateTime q1Time = null;
-                try {
-                    q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
-                } catch (IllegalArgumentException e) {
-                    // El tiempo viene sin minutos, probamos con otro formateador
-                    dtfTime = new DateTimeFormatterBuilder()
-                        .appendSecondOfMinute(2).appendLiteral(".")
-                        .appendMillisOfSecond(3).toFormatter();
-                    q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+            int idxQ2 = this.q2.indexOf(q1Pos);
+            if (idxQ2 >= 0) {
+                Position q2Pos = this.q2.get(idxQ2);
+                if (q2Pos.getTime().getTime() != null) {
+                    DateTime q1Time = null;
+                    try {
+                        q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                    } catch (IllegalArgumentException e) {
+                        // El tiempo viene sin minutos, probamos con otro formateador
+                        dtfTime = new DateTimeFormatterBuilder()
+                            .appendSecondOfMinute(2).appendLiteral(".")
+                            .appendMillisOfSecond(3).toFormatter();
+                        q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
+                    }
+                    DateTime gridTime = q1Time.plus(DateTime.parse(q2Pos.getTime().getTime(), dtfTime).getMillis());
+                    Position gridPos = new Position(q1Pos);
+                    gridPos.setTime(gridTime.toString(dtfTotalTime));
+                    this.grid.add(gridPos);
                 }
-                DateTime gridTime = q1Time.plus(DateTime.parse(q2Pos.getTime().getTime(), dtfTime).getMillis());
-                Position gridPos = new Position(q1Pos);
-                gridPos.setTime(gridTime.toString(dtfTotalTime));
-                this.grid.add(gridPos);
             }
         }
         

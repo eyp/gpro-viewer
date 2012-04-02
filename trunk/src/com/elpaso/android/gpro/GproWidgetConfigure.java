@@ -120,13 +120,13 @@ public class GproWidgetConfigure extends Activity {
         List<CharSequence> numbers = new ArrayList<CharSequence>();
         int limit = 0;
         if (groupType.equals(this.getString(R.string.rookie))) {
-            limit = 288;
+            limit = Integer.valueOf(this.getString(R.string.rookie_max_groups));
         } else if (groupType.equals(this.getString(R.string.amateur))) {
-            limit = 64;
+            limit = Integer.valueOf(this.getString(R.string.amateur_max_groups));
         } else if (groupType.equals(this.getString(R.string.pro))) {
-            limit = 16;
+            limit = Integer.valueOf(this.getString(R.string.pro_max_groups));
         } else if (groupType.equals(this.getString(R.string.master))) {
-            limit = 8;
+            limit = Integer.valueOf(this.getString(R.string.master_max_groups));
         } 
         for (int i = 1; i <= limit; i++) {
             numbers.add(String.valueOf(i));
