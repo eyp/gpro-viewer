@@ -27,7 +27,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 public class UIHelper {
-    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
+    private static final Logger logger = LoggerFactory.getLogger(UIHelper.class);
 
     /**
      * Construye un dialogo de 'progreso de acción' con estilo spinner. No se puede cancelar.
