@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="actual_race_light_page">http://www.gpro.net/es/race_light.asp?Group=</string>
-
+    <string name="race_light_page">http://www.gpro.net/es/race_light.asp?Group=</string>
+    <string name="race_page">http://www.gpro.net/es/Race.asp?Group=</string>
+    <string name="race_replay_page">http://www.gpro.net/es/RaceReplayHistory.asp?Group=</string>
+    
     <!-- Etiquetas -->
     <string name="view_grid">Parrilla</string>
     <string name="race">Carrera</string>
+    <string name="light_race">Carrera Txt</string>
     <string name="not_qualified">Sin clasificar</string>
     <string name="manager_name_label">Nombre del mánager</string>
     <string name="group_number_label">Número de grupo</string>

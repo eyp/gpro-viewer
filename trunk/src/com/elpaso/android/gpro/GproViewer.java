@@ -54,6 +54,10 @@ public class GproViewer extends TabActivity {
         spec = tabHost.newTabSpec("race").setIndicator(this.getString(R.string.race), res.getDrawable(R.drawable.ic_tab_flag)).setContent(intent);
         tabHost.addTab(spec);
 
+        intent = new Intent().setClass(this, GproTextRaceViewer.class);
+        spec = tabHost.newTabSpec("light_race").setIndicator(this.getString(R.string.light_race), res.getDrawable(R.drawable.ic_tab_flag)).setContent(intent);
+        tabHost.addTab(spec);
+
         tabHost.setCurrentTab(0);
     }
 }

@@ -15,11 +15,11 @@
  */
 package com.elpaso.android.gpro;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -27,7 +27,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebSettings;
 import android.widget.ScrollView;
 
 import com.elpaso.android.gpro.exceptions.ConfigurationException;
@@ -35,8 +34,8 @@ import com.elpaso.android.gpro.exceptions.ConfigurationException;
 /**
  * @author eduardo.yanez
  */
-public class GproRaceViewer extends Activity {
-    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
+public class GproTextRaceViewer extends Activity {
+    private static final Logger logger = LoggerFactory.getLogger(GproTextRaceViewer.class);
 
     /** 
      * Called when the activity is first created. 
@@ -47,12 +46,12 @@ public class GproRaceViewer extends Activity {
         ScrollView scroll = new ScrollView(this.getParent());
         WebView view = new WebView(this.getParent());
         view.getSettings().setJavaScriptEnabled(true);
-        view.getSettings().setUseWideViewPort(true);
-        view.getSettings().setDefaultZoom(WebSettings.ZoomDensity.FAR);
+        view.getSettings().setSupportZoom(true);
+        view.getSettings().setBuiltInZoomControls(true);
         view.setWebChromeClient(new WebChromeClient());
         try {
             String managerGroup = GproWidgetConfigure.loadGroupId(this.getParent());
-            String url = getString(R.string.race_page) + URLEncoder.encode(managerGroup, "UTF-8");
+            String url = getString(R.string.race_light_page) + URLEncoder.encode(managerGroup, "UTF-8");
             view.loadUrl(url);
         } catch (UnsupportedEncodingException e) {
             logger.error("Error loading race page", e);

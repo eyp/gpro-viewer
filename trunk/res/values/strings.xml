@@ -9,6 +9,8 @@
     <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>
     <string name="suppliers_url">http://didlsjm328074.cloudfront.net/compressed</string>
     <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
+    <string name="race_page">http://www.gpro.net/en/Race.asp?Group=</string>
+    <string name="race_replay_page">http://www.gpro.net/en/RaceReplayHistory.asp?Group=</string>
     
     <!-- XML services -->    
     <string name="service_grid_page">http://www.gpro.net/gb/devzone/StartingGridXML.asp?Group=</string>
@@ -26,6 +28,7 @@
     <string name="app_name">Gpro Viewer</string>
     <string name="view_grid">Grid</string>
     <string name="race">Race</string>
+    <string name="light_race">Light Race</string>
     <string name="qualification12">Q1/Q2</string>
     <string name="not_qualified">Not qualified yet</string>
     <string name="manager_name_label">Manager name</string>
