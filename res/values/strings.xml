@@ -4,18 +4,18 @@
     <string name="test">off</string>
     
     <!-- Site URLs -->
-    <string name="site_url">http://www.gpro.net/en</string>
-    <string name="liveries_url">http://gpro.s3.amazonaws.com/images/liveries</string>
-    <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>
-    <string name="suppliers_url">http://didlsjm328074.cloudfront.net/compressed</string>
-    <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
-    <string name="race_page">http://www.gpro.net/en/Race.asp?Group=</string>
-    <string name="race_replay_page">http://www.gpro.net/en/RaceReplayHistory.asp?Group=</string>
+    <string name="site_url">https://www.gpro.net/en</string>
+    <string name="liveries_url">https://gpro.s3.amazonaws.com/images/liveries</string>
+    <string name="flags_url">https://didlsjm328074.cloudfront.net/compressed</string>
+    <string name="suppliers_url">https://didlsjm328074.cloudfront.net/compressed</string>
+    <string name="race_light_page">https://www.gpro.net/en/race_light.asp?Group=</string>
+    <string name="race_page">https://www.gpro.net/en/Race.asp?Group=</string>
+    <string name="race_replay_page">https://www.gpro.net/en/RaceReplayHistory.asp?Group=</string>
     
     <!-- XML services -->    
-    <string name="service_grid_page">http://www.gpro.net/gb/devzone/StartingGridXML.asp?Group=</string>
-    <string name="service_group_members_page">http://www.gpro.net/gb/devzone/ManagersInGroupXML.asp?Group=</string>
-    <string name="service_qualifications_page">http://www.gpro.net/gb/devzone/Qualify12StandingsXML.asp?Group=</string>
+    <string name="service_grid_page">https://www.gpro.net/gb/devzone/StartingGridXML.asp?Group=</string>
+    <string name="service_group_members_page">https://www.gpro.net/gb/devzone/ManagersInGroupXML.asp?Group=</string>
+    <string name="service_qualifications_page">https://www.gpro.net/gb/devzone/Qualify12StandingsXML.asp?Group=</string>
     
     <!-- Debug XML services -->
     <string name="test_race_light_page">http://192.168.6.20:80/gpro/race_light.html?Group=</string>
