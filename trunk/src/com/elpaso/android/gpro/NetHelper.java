@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.StrictMode;
 
 public class NetHelper {
     private static final Logger logger = LoggerFactory.getLogger(UtilHelper.class);
@@ -63,7 +64,10 @@ public class NetHelper {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
-            conn = (HttpURLConnection) imageUrl.openConnection();
+        	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        	StrictMode.setThreadPolicy(policy);             
+        	conn = (HttpURLConnection) imageUrl.openConnection();
+            logger.info("URL: " + imageUrl.getPath());
             conn.setDoInput(true);
             conn.connect();
             is = conn.getInputStream();

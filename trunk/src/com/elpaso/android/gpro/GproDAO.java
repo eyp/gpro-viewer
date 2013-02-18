@@ -41,6 +41,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import android.content.Context;
+import android.os.StrictMode;
 
 import com.elpaso.android.gpro.beans.Manager;
 import com.elpaso.android.gpro.beans.Position;
@@ -58,7 +59,7 @@ import com.elpaso.android.gpro.parsers.XmlQualificationsParser;
  * @author eduardo.yanez
  */
 public class GproDAO {
-    private static final Logger logger = LoggerFactory.getLogger(GproDAO.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproDAO");
     private static final String ENCODING = "UTF-8";
     
     /**
@@ -156,6 +157,8 @@ public class GproDAO {
 
             parser = new XmlQualificationsParser();
             xr.setContentHandler(parser);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy); 
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
         } catch (Exception e) {
             logger.error("Error parsing XML qualifications service response", e);
@@ -187,6 +190,8 @@ public class GproDAO {
 
             XmlGroupManagersParser parser = new XmlGroupManagersParser();
             xr.setContentHandler(parser);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy); 
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
             if (logger.isDebugEnabled()) {
@@ -222,6 +227,8 @@ public class GproDAO {
 
             XmlGroupManagersParser parser = new XmlGroupManagersParser();
             xr.setContentHandler(parser);
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy); 
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
             if (logger.isDebugEnabled()) {

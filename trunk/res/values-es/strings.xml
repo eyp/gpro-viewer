@@ -60,9 +60,9 @@
         <item>Elite</item>
     </string-array>
     
-    <string name="rookie_max_groups">350</string>
-    <string name="amateur_max_groups">68</string>
-    <string name="pro_max_groups">16</string>
+    <string name="rookie_max_groups">358</string>
+    <string name="amateur_max_groups">80</string>
+    <string name="pro_max_groups">19</string>
     <string name="master_max_groups">4</string>
         
     <!-- Mensajes de error -->
