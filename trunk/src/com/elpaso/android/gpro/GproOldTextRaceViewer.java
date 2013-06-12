@@ -38,7 +38,7 @@ import com.elpaso.android.gpro.exceptions.ConfigurationException;
  * @author eduardo.yanez
  */
 public class GproOldTextRaceViewer extends Activity {
-    private static final Logger logger = LoggerFactory.getLogger(GproOldTextRaceViewer.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproOldTextRaceViewer");
     
 	/** 
 	 * Called when this activity is created. 
@@ -80,7 +80,7 @@ public class GproOldTextRaceViewer extends Activity {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle("Error");
                 alertDialog.setMessage(UIHelper.makeErrorMessage(context, e.getLocalizedMessage()));
-                alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         return;
                     } 

@@ -45,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproQualificationStandings extends ListActivity {
-    private static final Logger logger = LoggerFactory.getLogger(GproQualificationStandings.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproQualificationStandings");
     
 	/** 
 	 * Called on activity creation. 
@@ -97,7 +97,7 @@ public class GproQualificationStandings extends ListActivity {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle("Error");
                 alertDialog.setMessage(UIHelper.makeErrorMessage(context, context.getString(R.string.error_100)));
-                alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
                     return;
                 } }); 
@@ -133,7 +133,7 @@ public class GproQualificationStandings extends ListActivity {
                                 ImageView q1Flag = (ImageView) v.findViewById(R.id.q1_flag);
                                 if (q1Flag != null) {
                                     try {
-                                        q1Flag.setImageBitmap(NetHelper.loadImage(FLAGS_URL, q1Pos.getFlagImageUrl()));
+                                        q1Flag.setImageBitmap(NetHelper.loadImage(context.getResources(), FLAGS_URL, q1Pos.getFlagImageUrl()));
                                     } catch (MalformedURLException e) {
                                         logger.warn("Malformed URL for flag image: " + q1Pos.getFlagImageUrl() , e);
                                     } catch (IOException e) {
@@ -147,7 +147,7 @@ public class GproQualificationStandings extends ListActivity {
                                 ImageView q1Tyres = (ImageView) v.findViewById(R.id.q1_tyres);
                                 if (q1Tyres != null) {
                                     try {
-                                        q1Tyres.setImageBitmap(NetHelper.loadImage(SUPPLIERS_URL, q1Pos.getTyreSupplierImageUrl()));
+                                        q1Tyres.setImageBitmap(NetHelper.loadImage(context.getResources(), SUPPLIERS_URL, q1Pos.getTyreSupplierImageUrl()));
                                     } catch (MalformedURLException e) {
                                         logger.warn("Malformed URL for tyres image: " + q1Pos.getTyreSupplierImageUrl() , e);
                                     } catch (IOException e) {
@@ -195,7 +195,7 @@ public class GproQualificationStandings extends ListActivity {
                                 
                                     if (q2Flag != null) { 
                                         try {
-                                            q2Flag.setImageBitmap(NetHelper.loadImage(FLAGS_URL, q2Pos.getFlagImageUrl()));
+                                            q2Flag.setImageBitmap(NetHelper.loadImage(context.getResources(), FLAGS_URL, q2Pos.getFlagImageUrl()));
                                         } catch (MalformedURLException e) {
                                             logger.warn("Malformed URL for flag image: " + q2Pos.getFlagImageUrl() , e);
                                         } catch (IOException e) {
@@ -208,7 +208,7 @@ public class GproQualificationStandings extends ListActivity {
                                     // Only for landscape mode
                                     if (q2Tyres != null) {
                                         try {
-                                            q2Tyres.setImageBitmap(NetHelper.loadImage(SUPPLIERS_URL, q2Pos.getTyreSupplierImageUrl()));
+                                            q2Tyres.setImageBitmap(NetHelper.loadImage(context.getResources(), SUPPLIERS_URL, q2Pos.getTyreSupplierImageUrl()));
                                         } catch (MalformedURLException e) {
                                             logger.warn("Malformed URL for tyres image: " + q2Pos.getTyreSupplierImageUrl() , e);
                                         } catch (IOException e) {

@@ -45,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproGridViewer extends ListActivity {
-    private static final Logger logger = LoggerFactory.getLogger(GproQualificationStandings.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproQualificationStandings");
     
 	/** 
 	 * Called on activity creation. 
@@ -96,7 +96,7 @@ public class GproGridViewer extends ListActivity {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle("Error");
                 alertDialog.setMessage(UIHelper.makeErrorMessage(context, context.getString(R.string.error_100)));
-                alertDialog.setButton(context.getString(R.string.ok), new DialogInterface.OnClickListener() {
+                alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
                     return;
                 } }); 
@@ -130,7 +130,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView livery = (ImageView) v.findViewById(R.id.livery);
                             if (livery != null) {
                                 try {
-                                    Bitmap bmp = NetHelper.loadImage(LIVERIES_URL, driver.getLandscapeLiveryImageUrl());
+                                    Bitmap bmp = NetHelper.loadImage(context.getResources(), LIVERIES_URL, driver.getLandscapeLiveryImageUrl());
                                     livery.setImageBitmap(bmp);
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for livery image: " + driver.getLandscapeLiveryImageUrl() , e);
@@ -142,7 +142,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView flag = (ImageView) v.findViewById(R.id.flag);
                             if (flag != null) {
                                 try {
-                                    flag.setImageBitmap(NetHelper.loadImage(FLAGS_URL, driver.getFlagImageUrl()));
+                                    flag.setImageBitmap(NetHelper.loadImage(context.getResources(), FLAGS_URL, driver.getFlagImageUrl()));
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for flag image: " + driver.getFlagImageUrl() , e);
                                 } catch (IOException e) {
@@ -154,7 +154,7 @@ public class GproGridViewer extends ListActivity {
                             ImageView tyres = (ImageView) v.findViewById(R.id.tyres);
                             if (tyres != null) {
                                 try {
-                                    tyres.setImageBitmap(NetHelper.loadImage(SUPPLIERS_URL, driver.getTyreSupplierImageUrl()));
+                                    tyres.setImageBitmap(NetHelper.loadImage(context.getResources(), SUPPLIERS_URL, driver.getTyreSupplierImageUrl()));
                                 } catch (MalformedURLException e) {
                                     logger.warn("Malformed URL for tyres image: " + driver.getTyreSupplierImageUrl() , e);
                                 } catch (IOException e) {

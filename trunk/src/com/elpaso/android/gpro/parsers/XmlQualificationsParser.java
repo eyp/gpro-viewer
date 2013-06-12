@@ -72,7 +72,7 @@ import com.elpaso.android.gpro.beans.Q12Position;
  * @author eduardo.yanez
  */
 public class XmlQualificationsParser extends DefaultHandler {
-    private static final Logger logger = LoggerFactory.getLogger(XmlQualificationsParser.class);
+    private static final Logger logger = LoggerFactory.getLogger("XmlQualificationsParser");
     private List<Position> q1;
     private List<Position> q2;
     private List<Q12Position> q12;
@@ -149,7 +149,7 @@ public class XmlQualificationsParser extends DefaultHandler {
                 this.currentPosition.setPosition(Integer.valueOf(currentValue));
             }
         } else if (qName.equalsIgnoreCase("name") || localName.equalsIgnoreCase("name")) {
-            logger.info("Name: " + this.currentValue);
+            logger.info("Name: {}", this.currentValue);
             this.currentPosition.setName(currentValue);
         } else if (qName.equalsIgnoreCase("shortedname") || localName.equalsIgnoreCase("shortedname")) {
             // Since very long names Removes the second surname of some shorted names in order to show right the information on the screen
@@ -161,7 +161,7 @@ public class XmlQualificationsParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("country") || localName.equalsIgnoreCase("country")) {
             this.currentPosition.setCountry(currentValue);
         } else if (qName.equalsIgnoreCase("idm") || localName.equalsIgnoreCase("idm")) {
-            logger.info("IDM: " + this.currentValue);
+            logger.info("IDM: {}", this.currentValue);
             this.currentPosition.setIdm(Integer.valueOf(currentValue));
         } else if (qName.equalsIgnoreCase("championships") || localName.equalsIgnoreCase("championships")) {
             this.currentPosition.setChampionships(Integer.valueOf(currentValue));
@@ -199,7 +199,7 @@ public class XmlQualificationsParser extends DefaultHandler {
             this.currentPosition.setLiveryImageUrl(url);
             this.currentPosition.setLandscapeLiveryImageUrl(url.replace("car.gif", "car_horiz.gif"));
         } else if (qName.equalsIgnoreCase("TYRESUPPLIER_URL") || localName.equalsIgnoreCase("TYRESUPPLIER_URL")) {
-            logger.info("SUPPLIER IMAGE: " + this.currentValue);
+            logger.info("SUPPLIER IMAGE: {}", this.currentValue);
             this.currentPosition.setTyreSupplierImageUrl(this.currentValue);
         }
     }

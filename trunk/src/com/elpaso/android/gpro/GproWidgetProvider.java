@@ -39,19 +39,18 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetProvider extends AppWidgetProvider {
-    private static final Logger logger = LoggerFactory.getLogger(GproWidgetProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproWidgetProvider");
+    private List<Position> drivers;
     
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] widgetIds) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("onUpdate");
-        }
+        logger.debug("onUpdate");
         final int N = widgetIds.length;
 
         // For each widget...
         for (int i = 0; i < N; i++) {
             int widgetId = widgetIds[i];
             try {
-                setUpWidget(context, appWidgetManager, widgetId, GproWidgetConfigure.loadManagerIdm(context));
+                setUpWidget(context, appWidgetManager, widgetId);
             } catch (ParseException e) {
                 logger.error("Error happened getting information from GPRO", e);
             }
@@ -62,63 +61,41 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * Initializes the widget, buttons, and updates the information shown.
      * Gets the qualification information, and shows the manager's position in the grid and the offset time related to the pole position.
      */
-    static void setUpWidget(Context context, AppWidgetManager appWidgetManager, int widgetId, Integer managerIdm) throws ParseException {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Setting up GproWidget [{}]", widgetId);
-        }
+    private void setUpWidget(Context context, AppWidgetManager appWidgetManager, int widgetId) throws ParseException {
+        logger.debug("Setting up GproWidget [{}]", widgetId);
         // Getting widget's views
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.gpro_widget);
 
         // Making an intent to launch the main activity 
-        //Intent intent = new Intent(context, GproGridViewer.class);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring grid button 1");
-        }
+        logger.debug("Configuring widget arrow button");
         Intent intent = new Intent(context, GproViewer.class);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring grid button 2");
-        }
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring grid button 3");
-        }
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Linking the intent's call to the button's onclick event
-        if (logger.isDebugEnabled()) {
-            logger.debug("Configuring grid button");
-        }
         views.setOnClickPendingIntent(R.id.grid_button, pendingIntent);
         
         // Updating the text shown in the widget
-        if (logger.isDebugEnabled()) {
-            logger.debug("Updating widget info");
-        }
+        logger.debug("Updating widget info");
         String info = "";
         String managerName = "";
+        Integer managerIdm = GproWidgetConfigure.loadManagerIdm(context);
         if (managerIdm != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Getting grid position");
-            }
-            Position driver = findGridManagerPosition(context, managerIdm);
+            logger.debug("Getting grid position");
+            Position driver = this.findGridManagerPosition(context, managerIdm);
+            Integer totalDriversQualified = this.drivers.size();
             if (driver != null) {
-                info = String.format("%02d - %s", driver.getPosition(), driver.getTime().toString());
+                info = String.format("%1$d (%3$d) - %2$s", driver.getPosition(), driver.getTime().toString(), totalDriversQualified);
                 managerName = " - " + driver.getShortedName();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Creating livery image");
-                }
+                logger.debug("Creating livery image");
                 try {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Loading bitmap for livery image");
-                    }
+                    logger.debug("Loading bitmap for livery image");
                     final String LIVERIES_URL = context.getString(R.string.liveries_url);
-                    Bitmap bmp = NetHelper.loadImage(LIVERIES_URL, driver.getLiveryImageUrl());
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Setting livery image");
-                    }
+                    Bitmap bmp = NetHelper.loadImage(context.getResources(), LIVERIES_URL, driver.getLiveryImageUrl());
+                    logger.debug("Setting livery image");
                     views.setImageViewBitmap(R.id.livery, bmp);
                 } catch (MalformedURLException e) {
-                    logger.debug("Malformed URL for livery image " + driver.getLiveryImageUrl() , e);
+                    logger.warn("Malformed URL for livery image " + driver.getLiveryImageUrl() , e);
                 } catch (IOException e) {
                     logger.warn("Can't load livery image: " + driver.getLiveryImageUrl() , e);
                 }
@@ -130,13 +107,11 @@ public class GproWidgetProvider extends AppWidgetProvider {
             info = context.getString(R.string.not_qualified);
         }
         views.setTextViewText(R.id.text, info);
-        views.setTextViewText(R.id.title, String.format("%s%s", context.getString(R.string.app_name), managerName));
+        views.setTextViewText(R.id.title, String.format("%1$s%2$s", context.getString(R.string.app_name), managerName));
 
         // Updating the widget
         appWidgetManager.updateAppWidget(widgetId, views);
-        if (logger.isDebugEnabled()) {
-            logger.debug("Set up finished");
-        }
+        logger.debug("Set up finished");
     }
 
     /**
@@ -145,8 +120,8 @@ public class GproWidgetProvider extends AppWidgetProvider {
      * @param managerIdm Manager's ID.
      * @return Qualification information, or null if the manager isn't qualified yet.
      */
-    private static Position findGridManagerPosition(Context context, Integer managerIdm) throws ParseException {
-        List<Position> drivers = GproDAO.findGridPositions(context); 
+    private Position findGridManagerPosition(Context context, Integer managerIdm) throws ParseException {
+        this.drivers = GproDAO.findGridPositions(context);
         for (Position driver : drivers) {
             if (driver.getIdm().equals(managerIdm)) {
                 return driver;
