@@ -41,6 +41,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 
 import com.elpaso.android.gpro.beans.Manager;
@@ -139,9 +140,7 @@ public class GproDAO {
     private static XmlQualificationsParser parseQualificationsPage(Context context) throws ParseException {
         XmlQualificationsParser parser = null;
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Parsing XML response for qualifications standings");
-            }
+            logger.debug("Parsing XML response for qualifications standings");
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
@@ -150,9 +149,7 @@ public class GproDAO {
             if (group == null) {
                 return null;
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Group ID: {}", group);
-            }
+            logger.debug("Group ID: {}", group);
             URL sourceUrl = new URL(getQualificationsPage(group, context));
 
             parser = new XmlQualificationsParser();
@@ -165,6 +162,7 @@ public class GproDAO {
             throw new ParseException("Error parsing XML qualifications service response");
         }
         return parser;
+    	//return new ParseQualificationTask().execute(new Context[] {context});
     }
     
     /**
@@ -175,17 +173,13 @@ public class GproDAO {
     public static List<Manager> findGroupMembers(Context context) throws ParseException {
         List<Manager> managers = null;
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Parsing XML response for group members");
-            }
+            logger.debug("Parsing XML response for group members");
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
 
             String group = GproWidgetConfigure.loadGroupId(context);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Group ID: {}", group);
-            }
+            logger.debug("Group ID: {}", group);
             URL sourceUrl = new URL(getGroupMembersPage(group, context));
 
             XmlGroupManagersParser parser = new XmlGroupManagersParser();
@@ -194,9 +188,7 @@ public class GproDAO {
             StrictMode.setThreadPolicy(policy); 
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} managers in group {}", managers.size(), group);
-            }
+            logger.debug("{} managers in group {}", managers.size(), group);
         } catch (Exception e) {
             logger.error("Error parsing XML group members service response", e);
             throw new ParseException("Error parsing XML group members service response");
@@ -214,9 +206,7 @@ public class GproDAO {
     public static List<Manager> findGroupMembers(Context context, String groupType, String groupNumber) throws ParseException {
         List<Manager> managers = null;
         try {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Parsing XML response for group members");
-            }
+            logger.debug("Parsing XML response for group members");
             SAXParserFactory spf = SAXParserFactory.newInstance();
             SAXParser sp = spf.newSAXParser();
             XMLReader xr = sp.getXMLReader();
@@ -231,9 +221,7 @@ public class GproDAO {
             StrictMode.setThreadPolicy(policy); 
             xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
             managers = parser.getManagers();
-            if (logger.isDebugEnabled()) {
-                logger.debug("{} managers in group {}", managers.size(), group);
-            }
+            logger.debug("{} managers in group {}", managers.size(), group);
         } catch (Exception e) {
             logger.error("Error parsing XML group members service response", e);
             throw new ParseException("Error parsing XML group members service response");
@@ -315,14 +303,45 @@ public class GproDAO {
             }
             pageContent = content.toString();
         } catch (MalformedURLException e) {
-            logger.error("Malformed URL [" + url + "]", e);
+            logger.error("Malformed URL [{}]", url, e);
         } catch (ClientProtocolException e) {
-            logger.error("Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [{}] content", url, e);
         } catch (URISyntaxException e) {
-            logger.error("Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [{}] content", url, e);
         } catch (IOException e) {
-            logger.error("Error reading page's [" + url + "] content", e);
+            logger.error("Error reading page's [{}] content", url, e);
         }
         return pageContent;
+    }
+    
+    class ParseQualificationTask extends AsyncTask<Context, Void, XmlQualificationsParser> {
+		@Override
+		protected XmlQualificationsParser doInBackground(Context... contexts) {
+	        XmlQualificationsParser parser = null;
+	        try {
+                logger.debug("Parsing XML response for qualifications standings");
+	            SAXParserFactory spf = SAXParserFactory.newInstance();
+	            SAXParser sp = spf.newSAXParser();
+	            XMLReader xr = sp.getXMLReader();
+
+	            String group = GproWidgetConfigure.loadGroupId(contexts[0]);
+	            if (group == null) {
+	                return null;
+	            }
+                logger.debug("Group ID: {}", group);
+	            URL sourceUrl = new URL(getQualificationsPage(group, contexts[0]));
+
+	            parser = new XmlQualificationsParser();
+	            xr.setContentHandler(parser);
+	            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+	            StrictMode.setThreadPolicy(policy); 
+	            xr.parse(new InputSource(ParserHelper.unscapeStream(sourceUrl.openStream())));
+	        } catch (Exception e) {
+	            logger.error("Error parsing XML qualifications service response", e);
+	            return null;
+	        }
+	        return parser;
+		}
+    	
     }
 }

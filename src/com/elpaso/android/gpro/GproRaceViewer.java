@@ -21,6 +21,7 @@ import java.net.URLEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -36,12 +37,13 @@ import com.elpaso.android.gpro.exceptions.ConfigurationException;
  * @author eduardo.yanez
  */
 public class GproRaceViewer extends Activity {
-    private static final Logger logger = LoggerFactory.getLogger(GproRaceViewer.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproRaceViewer");
 
     /** 
      * Called when the activity is first created. 
      **/
-    @Override
+    @SuppressLint("SetJavaScriptEnabled")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScrollView scroll = new ScrollView(this.getParent());
@@ -60,7 +62,7 @@ public class GproRaceViewer extends Activity {
             AlertDialog alertDialog = new AlertDialog.Builder(this.getParent()).create();
             alertDialog.setTitle("Error");
             alertDialog.setMessage(UIHelper.makeErrorMessage(this.getParent(), e.getLocalizedMessage()));
-            alertDialog.setButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     return;
                 } 

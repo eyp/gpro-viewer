@@ -7,12 +7,13 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Environment;
 
 public class IOHelper {
-    public static Logger logger = LoggerFactory.getLogger(IOHelper.class);
+    public static Logger logger = LoggerFactory.getLogger("IOHelper");
     private static final String STORAGE_ROOT_DIR = "/Android/data/com.elpaso.android.gpro/files/";
     
     /**
@@ -76,7 +77,7 @@ public class IOHelper {
      * @return a Bitmap with the image or null if it doesn't exist in the card.
      * @throws IOException if an error happened reading the file.
      */
-    public static Bitmap loadImageFromExternalStorage(String filename) throws IOException {
+    public static Bitmap loadImageFromExternalStorage(Resources res, String filename) throws IOException {
         if (!IOHelper.checkSDAvailability()) {
             return null;
         }
@@ -88,7 +89,7 @@ public class IOHelper {
         }
         File imageFile = new File(rootDir.getAbsolutePath() + "/" + filename);
         if (imageFile.exists()) {
-            BitmapDrawable bd = new BitmapDrawable(imageFile.getAbsolutePath());
+            BitmapDrawable bd = new BitmapDrawable(res, imageFile.getAbsolutePath());
             return bd.getBitmap();
         } else {
             return null;

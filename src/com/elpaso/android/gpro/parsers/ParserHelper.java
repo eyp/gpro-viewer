@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ParserHelper {
-    private static final Logger logger = LoggerFactory.getLogger(ParserHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger("ParserHelper");
     private static final int KB_SIZE = 1024;
 
     /**

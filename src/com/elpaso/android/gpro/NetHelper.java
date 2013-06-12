@@ -10,12 +10,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.StrictMode;
 
 public class NetHelper {
-    private static final Logger logger = LoggerFactory.getLogger(UtilHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger("NetHelper");
     private static Map<String, Bitmap> images = new HashMap<String, Bitmap>();
 
     /**
@@ -24,7 +25,7 @@ public class NetHelper {
      * 
      * @return a {@link Bitmap} or null if the image couldn't be loaded.
      */
-    public static Bitmap loadImage(String server, String filename) throws IOException {
+    public static Bitmap loadImage(Resources res, String server, String filename) throws IOException {
         Bitmap imageBitmap = null;
         if (images.containsKey(filename)) {
             if (logger.isDebugEnabled()) {
@@ -33,7 +34,7 @@ public class NetHelper {
             return images.get(filename);
         } else {
             // Searchs the file in the SD card, if it isn't there, then it loads the file from GPRO web site
-            imageBitmap = IOHelper.loadImageFromExternalStorage(filename);
+            imageBitmap = IOHelper.loadImageFromExternalStorage(res, filename);
             if (imageBitmap == null) {
                 // Fetch the image in the GPRO site
                 imageBitmap = loadRemoteImage(new URL(server + filename));

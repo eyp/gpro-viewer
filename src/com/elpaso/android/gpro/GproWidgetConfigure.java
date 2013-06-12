@@ -45,7 +45,7 @@ import com.elpaso.android.gpro.exceptions.ParseException;
  * @author eduardo.yanez
  */
 public class GproWidgetConfigure extends Activity {
-    private static final Logger logger = LoggerFactory.getLogger(GproWidgetConfigure.class);
+    private static final Logger logger = LoggerFactory.getLogger("GproWidgetConfigure");
 
     private static final String PREFS_NAME = "com.elpaso.android.gpro.GproWidgetProvider";
     private static final String PREF_PREFIX_KEY = "gpro_";
@@ -59,7 +59,7 @@ public class GproWidgetConfigure extends Activity {
     private Spinner managers;
     private Spinner groupNumbers;
     private Spinner groupTypes;
-    
+
     @Override
     public void onCreate(Bundle icicle) {
         if (logger.isDebugEnabled()) {
@@ -72,7 +72,7 @@ public class GproWidgetConfigure extends Activity {
         // Mostramos el layout configurado para este componente
         setContentView(R.layout.gpro_configuration);
 
-        // Buscamos los campos del formulario 
+        // Buscamos los campos del formulario
         // Desplegable con tipos de grupo
         this.groupTypes = (Spinner) findViewById(R.id.group_types_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.group_types, android.R.layout.simple_spinner_item);
@@ -153,13 +153,12 @@ public class GproWidgetConfigure extends Activity {
             saveGroupType(context, groupType);
             saveGroupNumber(context, groupNumber);
 
-            // Actualizamos la información que se muestra en el widget
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            try {
-                GproWidgetProvider.setUpWidget(context, appWidgetManager, mAppWidgetId, loadManagerIdm(context));
-            } catch (ParseException e) {
-                logger.error("Error happened getting information from GPRO", e);
-            }
+            // Updates the widget
+            Intent intent = new Intent(context, GproWidgetProvider.class);
+            intent.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+            int[] ids = {mAppWidgetId};
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,ids);
+            sendBroadcast(intent);
 
             // Devolvemos el control al widget que nos llamó
             Intent resultValue = new Intent();
