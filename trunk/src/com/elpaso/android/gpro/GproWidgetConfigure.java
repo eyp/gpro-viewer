@@ -103,6 +103,7 @@ public class GproWidgetConfigure extends Activity {
         }
     }
 
+    @Override
     protected Dialog onCreateDialog(int id) {
         Dialog dialog;
         switch(id) {

@@ -64,8 +64,7 @@ public class GproRaceViewer extends Activity {
             alertDialog.setMessage(UIHelper.makeErrorMessage(this.getParent(), e.getLocalizedMessage()));
             alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.ok), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    return;
-                } 
+                }
             });
             logger.warn("Error reading light race information from GPRO", e);
         }

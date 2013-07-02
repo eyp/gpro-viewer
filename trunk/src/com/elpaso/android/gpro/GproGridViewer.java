@@ -98,8 +98,7 @@ public class GproGridViewer extends ListActivity {
                 alertDialog.setMessage(UIHelper.makeErrorMessage(context, context.getString(R.string.error_100)));
                 alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.ok), new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
-                    return;
-                } }); 
+                } });
             } else {
                 final Integer managerId = GproWidgetConfigure.loadManagerIdm(context);
                 ArrayAdapter<Position> ad = new ArrayAdapter<Position>(context, R.layout.grid_line, drivers) {
