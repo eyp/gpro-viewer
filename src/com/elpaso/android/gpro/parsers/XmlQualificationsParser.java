@@ -253,7 +253,7 @@ public class XmlQualificationsParser extends DefaultHandler {
             if (idxQ2 >= 0) {
                 Position q2Pos = this.q2.get(idxQ2);
                 if (q2Pos.getTime().getTime() != null) {
-                    DateTime q1Time = null;
+                    DateTime q1Time;
                     try {
                         q1Time = DateTime.parse(q1Pos.getTime().getTime(), dtfTime);
                     } catch (IllegalArgumentException e) {
