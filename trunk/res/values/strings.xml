@@ -8,6 +8,7 @@
     <string name="liveries_url">http://gpro.s3.amazonaws.com/images/liveries</string>
     <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>
     <string name="suppliers_url">http://didlsjm328074.cloudfront.net/compressed</string>
+
     <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
     <string name="race_page">http://www.gpro.net/en/Race.asp?Group=</string>
     <string name="race_replay_page">http://www.gpro.net/en/RaceReplayHistory.asp?Group=</string>
