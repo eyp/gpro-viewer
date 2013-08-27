@@ -4,6 +4,7 @@
     <string name="test">off</string>
     
     <!-- Site URLs -->
+    <string name="site_host">www.gpro.net</string>
     <string name="site_url">http://www.gpro.net/en</string>
     <string name="liveries_url">http://gpro.s3.amazonaws.com/images/liveries</string>
     <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>

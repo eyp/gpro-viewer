@@ -15,22 +15,25 @@
  */
 package com.elpaso.android.gpro;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.webkit.WebChromeClient;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ScrollView;
+
+import com.elpaso.android.gpro.exceptions.ConfigurationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.ScrollView;
-
-import com.elpaso.android.gpro.exceptions.ConfigurationException;
 
 /**
  * @author eduardo.yanez
@@ -51,6 +54,7 @@ public class GproTextRaceViewer extends Activity {
         view.getSettings().setSupportZoom(true);
         view.getSettings().setBuiltInZoomControls(true);
         view.setWebChromeClient(new WebChromeClient());
+        view.setWebViewClient(new MyWebViewClient());
         try {
             String managerGroup = GproWidgetConfigure.loadGroupId(this.getParent());
             String url = getString(R.string.race_light_page) + URLEncoder.encode(managerGroup, "UTF-8");
@@ -70,5 +74,22 @@ public class GproTextRaceViewer extends Activity {
         }
         scroll.addView(view);
         setContentView(scroll);
+    }
+
+    /**
+     * With this class Android won't ask to open the default browser if the host is from GPRO.
+     */
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (getString(R.string.site_host).equals(Uri.parse(url).getHost())) {
+                // No lanzar navegador
+                return false;
+            }
+            // Es otra página, así que se lanzará otro navegador
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
+            return true;
+        }
     }
 }
