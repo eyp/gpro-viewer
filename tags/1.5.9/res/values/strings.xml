@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Config -->
+    <string name="test">off</string>
+    
+    <!-- Site URLs -->
+    <string name="site_host">www.gpro.net</string>
+    <string name="site_url">http://www.gpro.net/en</string>
+    <string name="liveries_url">http://gpro.s3.amazonaws.com/images/liveries</string>
+    <string name="flags_url">http://didlsjm328074.cloudfront.net/compressed</string>
+    <string name="suppliers_url">http://didlsjm328074.cloudfront.net/compressed</string>
+
+    <string name="race_light_page">http://www.gpro.net/en/race_light.asp?Group=</string>
+    <string name="race_page">http://www.gpro.net/en/Race.asp?Group=</string>
+    <string name="race_replay_page">http://www.gpro.net/en/RaceReplayHistory.asp?Group=</string>
+    
+    <!-- XML services -->    
+    <string name="service_grid_page">http://www.gpro.net/gb/devzone/StartingGridXML.asp?Group=</string>
+    <string name="service_group_members_page">http://www.gpro.net/gb/devzone/ManagersInGroupXML.asp?Group=</string>
+    <string name="service_qualifications_page">http://www.gpro.net/gb/devzone/Qualify12StandingsXML.asp?Group=</string>
+    
+    <!-- Debug XML services -->
+    <string name="test_race_light_page">http://192.168.6.20:80/gpro/race_light.html?Group=</string>
+    <string name="test_qualification_page">http://192.168.6.20:80/gpro/source_qualification_times_group_rookie-217.html</string>
+    <string name="test_service_grid_page">http://192.168.6.20:80/gpro/StartingGridXML.html?Group=</string>
+    <string name="test_service_group_members_page">http://192.168.6.20:80/gpro/ManagersInGroupXML.html?Group=</string>
+    <string name="test_service_qualifications_page">http://192.168.6.20:80/gpro/Qualify12StandingsXML.html</string>
+    
+    <!-- Labels -->
+    <string name="app_name">Gpro Viewer</string>
+    <string name="view_grid">Grid</string>
+    <string name="race">Race</string>
+    <string name="light_race">Light Race</string>
+    <string name="qualification12">Q1/Q2</string>
+    <string name="not_qualified">Not qualified yet</string>
+    <string name="manager_name_label">Manager name</string>
+    <string name="group_number_label">Group number</string>
+    <string name="group_type_label">Group type</string>
+    <string name="spinner_prompt">Choose one&#8230;</string>
+    <string name="save">Save</string>
+    <string name="refresh">Refresh</string>
+    <string name="ok">OK</string>
+    <string name="code">Code</string>
+    <string name="loading">Loading. Please wait&#8230;</string>
+    <string name="points">pts</string>
+    
+    <!-- Group types -->
+    <string name="rookie">Rookie</string>
+    <string name="amateur">Amateur</string>
+    <string name="pro">Pro</string>
+    <string name="master">Master</string>
+    <string name="elite">Elite</string>
+    
+    <string-array name="group_types">
+        <item>Rookie</item>
+        <item>Amateur</item>
+        <item>Pro</item>
+        <item>Master</item>
+        <item>Elite</item>
+    </string-array>
+    
+    <string name="rookie_max_groups">416</string>
+    <string name="amateur_max_groups">103</string>
+    <string name="pro_max_groups">25</string>
+    <string name="master_max_groups">5</string>
+        
+    <!-- Error messages -->
+    <string name="error">Error</string>
+    <string name="error_100">100 - There was an error getting information from GPRO</string>
+    <string name="error_101">101 - There was an error getting group\'s managers from GPRO</string>
+    <string name="error_102">102 - Gpro Viewer is not configured right, please remove it from de desktop and reconfigure it</string>
+</resources>
